@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<!-- Example of One Dimensional Data using the Histogram layout-->
+<html>
+  <head>
+    <!-- Load D3 from site -->
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  </head>
+
+    <!-- Tooltip CSS Styling -->
+    <style type="text/css">
+
+            /* Bars */
+            body {
+                font: 10px sans-serif;
+            }
+
+            .bar rect {
+                fill: steelblue;
+                shape-rendering: crispEdges;
+            }
+
+            .bar text {
+                fill: #fff;
+            }
+
+            /* Axis */
+            .axis path, .axis line {
+                fill: none;
+                stroke: #000;
+                shape-rendering: crispEdges;
+            }
+
+            /* Hover Tooltip */
+            rect:hover {
+                fill: orange;
+            }
+
+            #tooltip {
+                position: absolute;
+                width: 200px;
+                height: auto;
+                padding: 10px;
+                background-color: white;
+                -webkit-border-radius: 10px;
+                -moz-border-radius: 10px;
+                border-radius: 10px;
+                -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+                -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+                box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+                pointer-events: none;
+            }
+
+            #tooltip.hidden {
+                display: none;
+            }
+
+            #tooltip p {
+                margin: 0;
+                font-family: sans-serif;
+                font-size: 16px;
+                line-height: 20px;
+            }
+
+        </style>
+    <!-- End CSS (Styling) -->
+
+  <body>
+    <h2>Histogram</h2>
+    <p>This is a data visualization using a histogram</p>
+    <h4>Click on this text to update chart with new values</h4>
+    <h3></h3>
+
+    <div id="tooltip" class="hidden">
+            <p><strong>Important Label Heading</strong></p>
+            <p><span id="value">100</span>%</p>
+    </div>
+
+
+  <script type="text/javascript">
+
+            // Setup settings for graphic
+            var margin = {
+                top: 10,
+                right: 30,
+                bottom: 30,
+                left: 10
+            }
+            var canvas_width = 500 - margin.left - margin.right;
+            var canvas_height = 250 - margin.top - margin.bottom;
+            var max_X = 30
+
+
+            var x = d3.scale.linear()
+                .domain([0, max_X])  // Set X value
+                .range([0, canvas_width]);  // Fill across the width of image
+
+            var values = d3.range(500);  // Height of bars
+
+            /*
+            var xScale = d3.scale.linear()
+                            .domain([0, d3.max(x)])  // input domain
+                            .range([0, canvas_width]); // output range
+                            // basically rangeBands() automatically calculates widths
+            */
+
+            var y = d3.scale.linear()
+                            .domain([0, d3.max(values)])  // input domain
+                            .range([0, canvas_height]);  // output range
+
+            var dataset = d3.layout.histogram()  // Put data into histogram
+                .bins(x.ticks(20))  // Setup this many bins/ticks
+                (values);  // Use these values
+
+            var xAxis = d3.svg.axis()  // Setup X Axis
+                .scale(x)
+                .orient("bottom");
+
+            // Create SVG element
+            var svg = d3.select("h3")  // This is where we put our vis
+                .append("svg")
+                .attr("width", canvas_width)
+                .attr("height", canvas_height)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top +")");
+
+            svg.append("g")
+                .attr("class", "x axis")
+                .call(xAxis);
+
+            var bar = svg.selectAll(".bar")
+                .data(values)
+                .enter()
+                .append("g")
+                .attr("class", "bar");
+
+            bar.append("rect")
+                .attr("x", 1)
+                .attr("width", 10)
+                .attr("height", function(d) {
+                    return canvas_height - 10);
+                });
+
+/*
+            // Create Bars
+            svg.selectAll("bar")
+                .data(dataset)
+                .enter()
+                .append("bar")  // Add bar svg, can also be say circle, rect
+                .attr("x", function(d, i) {
+                    return x(i); // Start graphing at X
+                })
+                .attr("y", function(d) {  // Start graphing at Y
+                    return canvas_height - y(d); // Y naturally goes top to bottom, so flip
+                })
+                .attr("width", x.range())  // Width of the bar
+                .attr("height", function(d) {
+                    return y(d);   // Height of each bar
+                })
+                .attr("fill", "teal") // Color
+/*
+                .on("mouseover", function(d) {  // Create tooltip on mouseover
+                    var xPosition = parseFloat(d3.select(this).attr("x")) + xScale.range() /2;
+                    var yPosition = parseFloat(d3.select(this).attr("y")) / 2 + canvas_height / 2;
+                    // parseFloat means that even if result is a string, interpret as a float
+
+                    // Update the tooltip position and value
+                    d3.select("#tooltip")
+                        .style("left", xPosition + "px")
+                        .style("top", yPosition + "px")
+                        .select("#value")
+                        .text(d)
+
+                    d3.select("#tooltip").classed("hidden", false);  // Show the tooltip
+                })
+                .on("mouseout", function() {  // 'Destroy' tooltip on mouseout
+                    d3.select("#tooltip").classed("hidden", true);  // Hide the tooltip
+                });
+
+            // Create Text Labels
+            svg.selectAll("text")
+                .data(dataset)
+                .enter()
+                .append("text")
+                .text(function(d){
+                    return d; // Value in array is the text
+                })
+                .attr("x", function(d, i) {
+                    return xScale(i) + xScale.range() / 2;
+                })
+                .attr("y", function(d) {
+                    return canvas_height - yScale(d) + 15;
+                })
+                .attr("font-family", "sans-serif") // Change text font
+                .attr("font-size", "14px") // Font size
+                .attr("text-anchor", "middle") // Align to middle
+                .attr("fill", "white");  // Color of font
+
+
+            // Do something on text click
+            d3.select("h4")
+                .on("click", function() {
+                    // Do Something
+                    var numValues = dataset.length;
+                    var maxValue = 25;  // Random's Max Number
+                    dataset = [];  // Initialize empty array
+                    for(var i=0; i<numValues; i++) {
+                        var newNumber = Math.floor(Math.random() * maxValue);  // Random int
+                        dataset.push(newNumber);
+                    }
+
+                    // Update Bars
+                    svg.selectAll("rect")
+                        .data(dataset)  // Update with new data
+                        .transition()  // Transition from old to new
+                        .delay(function(d, i) {
+                            return i / dataset.length * 500;  // Dynamic delay (each item delays a little longer)
+                        })
+                        //.delay(200)  // Wait in ms before animation (static)
+                        .duration(1000)  // Transition time - default 250ms
+                        .ease("linear")  // Transition easing - default 'variable' (i.e. has acceleration), also: 'circle', 'elastic', 'bounce', 'linear'
+                        .attr("y", function(d) {
+                            return canvas_height - yScale(d);
+                        })
+                        .attr("height", function(d) {
+                            return yScale(d);
+                        })
+                        .attr("fill", "teal");  // redraw
+
+                    // Update Text Labels
+                    svg.selectAll("text")
+                        .data(dataset)
+                        .transition()  // Transition from old to new
+                        .delay(function(d, i) {
+                            return i / dataset.length * 500;  // Dynamic delay (each item delays a little longer)
+                        })
+                        //.delay(200)  // Wait in ms before animation
+                        .duration(1000)  // Transition time - changed from default 250ms
+                        .ease("linear")  // Transition easing - default 'variable' (i.e. has acceleration), also: 'circle', 'elastic', 'bounce', 'linear'
+                        .text(function(d) {
+                            return d;
+                        })
+                        .attr("x", function(d, i) {
+                            return xScale(i) + xScale.rangeBand() /2;
+                        })
+                        .attr("y", function(d) {
+                            return canvas_height - yScale(d) + 15;
+                        });
+                });
+*/
+  </script>
+
+  </body>
+</html>

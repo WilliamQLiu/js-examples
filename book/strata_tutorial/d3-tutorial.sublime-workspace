@@ -1,0 +1,524 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"Date",
+				"DateTimeField	class"
+			],
+			[
+				"Radio",
+				"RadioSelect	class"
+			],
+			[
+				"Start",
+				"start_date	statement"
+			],
+			[
+				"CostCod",
+				"CostCodeSerializer	class"
+			],
+			[
+				"Time",
+				"TimeSerializer	class"
+			],
+			[
+				"find",
+				"find_elements_by_link_text	function"
+			],
+			[
+				"Program",
+				"ProgramForm	class"
+			],
+			[
+				"Pro",
+				"ProgramResultsView	class"
+			],
+			[
+				"time_",
+				"time_to_delete	statement"
+			],
+			[
+				"time",
+				"time_to_delete	statement"
+			],
+			[
+				"te",
+				"TextField	class"
+			],
+			[
+				"auth",
+				"auth_views"
+			],
+			[
+				"password",
+				"password_reset	function"
+			],
+			[
+				"user",
+				"user_id"
+			],
+			[
+				"get",
+				"get	function"
+			],
+			[
+				"name",
+				"user_name"
+			],
+			[
+				"Model",
+				"ModelAdmin	import"
+			],
+			[
+				"get_",
+				"get_full_name	function"
+			],
+			[
+				"my",
+				"my_user_name	function"
+			],
+			[
+				"Enter",
+				"EnterTimeForm	class"
+			],
+			[
+				"EnterProgram",
+				"EnterProgramForm	class"
+			],
+			[
+				"render",
+				"render_to_response	function"
+			],
+			[
+				"smart",
+				"smart_unicode	statement"
+			],
+			[
+				"da",
+				"DateField	class"
+			],
+			[
+				"EMAIL",
+				"EMAIL_PORT  (variable)"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 71.0,
+		"selected_items":
+		[
+			[
+				"Package Control: ena",
+				"Package Control: Enable Package"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Enable Package"
+			],
+			[
+				"Package Control: disa",
+				"Package Control: Disable Package"
+			],
+			[
+				"Package Control:disa",
+				"Package Control: Disable Package"
+			],
+			[
+				"Package Control: enable",
+				"Package Control: Enable Package"
+			],
+			[
+				"Package Control: install",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"Package Control: insta",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: disable",
+				"Package Control: Disable Package"
+			],
+			[
+				"Package Control: rem",
+				"Package Control: Remove Package"
+			]
+		],
+		"width": 588.0
+	},
+	"console":
+	{
+		"height": 161.0,
+		"history":
+		[
+			"view.options().set('wordWrap', False)",
+			"View.options().set('wordWrap', False)",
+			"view.options().set('wordWrap', False)",
+			"import urllib.request,os,hashlib; h = '7183a2d3e96f11eeadd761d777e62404' + 'e330c659d4bb41d3bdf022e94cab3cd0'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)",
+			"import urllib2,os; pf='Package Control.sublime-package'; ipp = sublime.installed_packages_path(); os.makedirs( ipp ) if not os.path.exists(ipp) else None; urllib2.install_opener( urllib2.build_opener( urllib2.ProxyHandler( ))); open( os.path.join( ipp, pf), 'wb' ).write( urllib2.urlopen( 'http://sublime.wbond.net/' +pf.replace( ' ','%20' )).read()); print( 'Please restart Sublime Text to finish installation')"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/williamliu/GitHub/strata-d3-tutorial/04_data_values.html",
+		"/Users/williamliu/GitHub/strata-d3-tutorial/05_create_an_svg.html",
+		"/Users/williamliu/GitHub/MHADjango/datasite/ddh/models.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/ddh/views.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/dataentry/urls.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/dataentry/settings.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/ddh.html",
+		"/Users/williamliu/GitHub/MHADjango/datasite/media/ddh_texts.csv",
+		"/Users/williamliu/GitHub/MHADjango/datasite/config/sql/load_csv.sql",
+		"/Users/williamliu/GitHub/Misc/D3 Template/d3/d3.v3.js",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/base.html",
+		"/Users/williamliu/GitHub/MHADjango/datasite/timesheets/views.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/ddh/admin.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/dataentry/celery.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/config/long_script.conf",
+		"/Users/williamliu/GitHub/MHADjango/datasite/config/nginx.conf",
+		"/Users/williamliu/GitHub/MHADjango/datasite/config/sample_long.sh",
+		"/Users/williamliu/GitHub/MHADjango/datasite/timesheets/tasks.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/dataentry/local_settings.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/dataentry/settings/__init__.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/dataentry/email_info.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/ddh/__init__.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/timesheets/serializers.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/dataentry/settings/base.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/dataentry/settings/local.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/program_update.html",
+		"/Users/williamliu/GitHub/MHADjango/datasite/timesheets/forms.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/dataentry/settings/settings.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/dataentry/__init__.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/dataentry/settings/production.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/program_list.html",
+		"/Users/williamliu/GitHub/MHADjango/datasite/timesheets/celery.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/timesheets/models.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/program_create.html",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/program_delete.html",
+		"/Users/williamliu/GitHub/MHADjango/datasite/timesheets/calculations.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/report.html",
+		"/Users/williamliu/GitHub/MHADjango/datasite/static/css/jumbotron.css",
+		"/Users/williamliu/GitHub/MHADjango/.gitignore",
+		"/Users/williamliu/GitHub/MHADjango/static/css/jumbotron.css",
+		"/Users/williamliu/GitHub/spark/core/src/main/scala/org/apache/spark/rdd/HadoopRDD.scala",
+		"/Users/williamliu/GitHub/MHAPython/iPython/MHA Timesheets.ipynb",
+		"/Users/williamliu/GitHub/spark/sql/hive/src/test/resources/ql/src/test/queries/clientpositive/mapjoin_hook.q",
+		"/Users/williamliu/GitHub/Python/docs/Makefile",
+		"/Users/williamliu/GitHub/westendly/westendly/userlogin/views.py",
+		"/Users/williamliu/GitHub/westendly/westendly/templates/job_list.html",
+		"/Users/williamliu/GitHub/westendly/westendly/userlogin/forms.py",
+		"/Users/williamliu/GitHub/westendly/westendly/templates/base.html",
+		"/Users/williamliu/GitHub/westendly/westendly/templates/resume_list.html",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/timesheet_list.html",
+		"/Users/williamliu/GitHub/westendly/westendly/userlogin/models.py",
+		"/Users/williamliu/sample.json",
+		"/Users/williamliu/GitHub/MHADjango/requirements.txt",
+		"/Users/williamliu/GitHub/westendly/westendly/settings.py",
+		"/Users/williamliu/GitHub/westendly/templates/base.html",
+		"/Users/williamliu/GitHub/westendly/westendly/userlogin/admin.py",
+		"/Users/williamliu/GitHub/westendly/userlogin/forms.py",
+		"/Users/williamliu/GitHub/westendly/userlogin/views.py",
+		"/Users/williamliu/GitHub/westendly/westendly/urls.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/timesheets/admin.py",
+		"/Users/williamliu/GitHub/westendly/templates/job_list.html",
+		"/Users/williamliu/GitHub/westendly/templates/resume_list.html",
+		"/Users/williamliu/GitHub/westendly/westendly/email_info.py",
+		"/Users/williamliu/GitHub/westendly/templates/search.html",
+		"/Users/williamliu/.profile",
+		"/Users/williamliu/GitHub/westendly/.profile",
+		"/Users/williamliu/.bash_profile",
+		"/Users/williamliu/GitHub/fullstack-template/README.md",
+		"/Users/williamliu/Desktop/sample_json",
+		"/Users/williamliu/GitHub/MHADjango/datasite/timesheets/api/resources.py",
+		"/Users/williamliu/GitHub/westendly/templates/registration/activation_email.html",
+		"/Users/williamliu/GitHub/westendly/userlogin/models.py",
+		"/Users/williamliu/GitHub/westendly/functional_tests.py",
+		"/Users/williamliu/GitHub/Python/Fabric/sample_fabric.py",
+		"/Users/williamliu/GitHub/Python/Celery/tasks.py",
+		"/Users/williamliu/GitHub/spark/sql/hive/src/test/resources/golden/show_functions-0-45a7762c39f1b0f26f076220e2764043",
+		"/Users/williamliu/GitHub/MHADjango/README.md",
+		"/Users/williamliu/GitHub/MHADjango/datasite/tests/functional_tests.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/timesheets/tests.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/docs/conf.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/docs/timesheets.rst",
+		"/Users/williamliu/GitHub/MHADjango/datasite/docs/index.rst",
+		"/Users/williamliu/GitHub/MHADjango/datasite/docs/source/conf.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/docs/source/index.rst",
+		"/Users/williamliu/GitHub/MHADjango/datasite/docs/doctrees/environment.pickle",
+		"/Users/williamliu/GitHub/MHADjango/datasite/docs/doctrees/index.doctree",
+		"/Users/williamliu/GitHub/MHADjango/datasite/docs/installation.rst",
+		"/Users/williamliu/GitHub/MHADjango/datasite/docs/deployment.rst",
+		"/Users/williamliu/GitHub/MHADjango/datasite/functional_tests.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/blank.html",
+		"/Users/williamliu/Library/Application Support/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
+		"/Users/williamliu/Library/Application Support/Sublime Text 3/Packages/Anaconda/Anaconda.sublime-settings",
+		"/Users/williamliu/Library/Application Support/Sublime Text 3/Packages/SublimeCodeIntel/SublimeCodeIntel.sublime-settings",
+		"/Users/williamliu/Desktop/test.html",
+		"/Users/williamliu/GitHub/MHADjango/datasite/static/css/images/ui-bg_gloss-wave_35_f6a828_500x100.png",
+		"/Users/williamliu/GitHub/MHADjango/datasite/static/css/cover.css",
+		"/Users/williamliu/GitHub/MHADjango/datasite/static/js/custom.js",
+		"/Users/williamliu/GitHub/WebDev/jQuery/tutsplus/jquery-1.11.1.js",
+		"/Users/williamliu/GitHub/WebDev/jQuery/tutsplus/index.html",
+		"/Users/williamliu/GitHub/WebDev/jQuery/jQueryHelloWorld/index.html",
+		"/Users/williamliu/Library/Application Support/Sublime Text 3/Packages/User/SublimeCodeIntel.sublime-settings",
+		"/Users/williamliu/GitHub/MHADjango/datasite/timesheets/functional_tests.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/program_create_useless.html",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/program_edit.html",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/enter.html",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/all.html",
+		"/Users/williamliu/GitHub/Python/debug/ipdb_example.py",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/registration/results.html",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/delete_time.html",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/delete.html",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/single_user.html",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/registration/login.html",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/registration/activation_email.html",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/registration/activation_email.txt",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/login_old.html",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/registration/registration_form.html",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/register_old.html",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/login.html",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/password_reset_form.html",
+		"/Users/williamliu/Dropbox/westendly/login",
+		"/Users/williamliu/GitHub/westendly/static/css/starter-template.css",
+		"/Users/williamliu/Dropbox/westendly/design",
+		"/Users/williamliu/.ssh/known_hosts",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/register.html",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/password_reset_confirm.html",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/password_reset_email.html",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/password_reset_done.html",
+		"/Users/williamliu/GitHub/MHADjango/datasite/templates/password_reset_complete.html"
+	],
+	"find":
+	{
+		"height": 37.0
+	},
+	"find_in_files":
+	{
+		"height": 95.0,
+		"where_history":
+		[
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"settings",
+			"js",
+			"javascript",
+			"celery",
+			"group",
+			"APIlink",
+			"serializers",
+			"from",
+			"data",
+			"program",
+			"program_list",
+			"program-list",
+			"monthly",
+			"None",
+			"listview",
+			"generic",
+			"MyEncoder",
+			"calendar",
+			"df.",
+			"df.cacl",
+			"register",
+			"timesheet",
+			"timesheets",
+			"listview",
+			"decorators",
+			"APIView",
+			"ProgramViewSet",
+			"render_to_response",
+			"viewsets",
+			"program",
+			"views.",
+			"time",
+			"UserViewSet",
+			"serializer",
+			".apply",
+			"map\nmap",
+			".map",
+			"admin",
+			"coverage",
+			"wait",
+			"pause",
+			"program-list",
+			"blank",
+			"body",
+			"$",
+			"select",
+			"all",
+			"enter",
+			"all",
+			"protocol",
+			"message",
+			"user_login",
+			"block content",
+			"enter",
+			"tab",
+			"enter",
+			"tab",
+			"entertime",
+			"EnterTime",
+			"input",
+			"inherit",
+			"color: inherit",
+			"white",
+			"p",
+			"line",
+			"space",
+			"spaces",
+			"space",
+			"container",
+			"DJANGO_SETTINGS_MODULE",
+			"outfile",
+			"id",
+			"conversation",
+			"name",
+			"how did you find out",
+			"word_wrap",
+			"wrap",
+			"mydataframe",
+			"New York",
+			"new york",
+			"array",
+			"4",
+			"space"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"ic_svy"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 36.0
+	},
+	"input":
+	{
+		"height": 33.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.anaconda_documentation":
+	{
+		"height": 194.0
+	},
+	"output.exec":
+	{
+		"height": 165.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.sftp":
+	{
+		"height": 0.0
+	},
+	"project": "d3-tutorial.sublime-project",
+	"replace":
+	{
+		"height": 66.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 228.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

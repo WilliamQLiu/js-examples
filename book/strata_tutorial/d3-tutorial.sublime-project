@@ -1,0 +1,17 @@
+{
+	"folders":
+	[
+		{
+			"follow_symlinks": true,
+			"path": "/Users/williamliu/GitHub"
+		},
+		{
+			"follow_symlinks": true,
+			"path": "/Users/williamliu/GitHub/d3-book"
+		},
+		{
+			"follow_symlinks": true,
+			"path": "/Users/williamliu/GitHub/D3"
+		}
+	]
+}

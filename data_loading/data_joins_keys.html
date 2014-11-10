@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<!-- Using data with keys -->
+<html>
+  <head>
+    <!-- Load D3 from site -->
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  </head>
+
+  <!-- CSS (Styling) -->
+  <style type="text/css">
+
+  </style>
+  <!-- End CSS (Styling) -->
+
+  <body>
+    <h2>Data Joins</h2>
+    <p>This shows different data joins</p>
+    <h3></h3>
+
+  <!-- Begin Javascript -->
+  <script type="text/javascript">
+
+      /*
+      // Option 1 - Load data with CSV, TSV, JSON
+      d3.csv("my_file.csv", function(error, dataset) {
+        if (error) {
+            console.log(error);
+        } else {
+            console.log(dataset);  // Print data out to console
+        }
+
+        // List all texts
+        d3.select("h3").selectAll("p")
+          .data(dataset)
+          .enter()
+          .append("p")
+          .text(function(d) {
+              return "Option 1 loading Cats column: " + d.Cats;  // Return column named Cats
+          });
+        });
+      */
+
+      // Option 2 - dataset is an array of values (say objects in this case)
+      var dataset = [
+        { mykey: 'Apples', myvalue: 5 }, // to access value, do dataset.myvalue
+        { mykey: 'Bananas', myvalue: 10 },
+        { mykey: 'Cats', myvalue: 20 },
+        { mykey: 'Dogs', myvalue: 13 },
+        { mykey: 'Elephants', myvalue: 25 },
+        { mykey: 'Foxes', myvalue: 2 }
+      ];
+
+      // List all texts
+      d3.select("h3").selectAll("p")
+          .data(dataset)
+          .enter()
+          .append("p")
+          .text(function(d) {
+              return "Option 2 loading dataset: " + d.myvalue;  // Return dataset values
+          });
+
+  </script>
+  <!-- End Javascript -->
+
+  </body>
+</html>
