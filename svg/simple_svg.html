@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<!-- D3 Template -->
+<html>
+  <head>
+    <!-- Load D3 from site -->
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  </head>
+
+  <!-- CSS (Styling) -->
+  <style type="text/css">
+
+    /* CSS attributes for SVG are sometimes slightly different from HTML */
+    .red {
+      fill: red; /* Not background-color! */
+    }
+
+    .fancy {
+      fill: none;
+      stroke: black; /* similar to border-color */
+      stroke-width: 3pt; /* similar to border-width */
+      stroke-dasharray: 3,5,10;
+    }
+
+  </style>
+  <!-- End CSS (Styling) -->
+
+  <body>
+
+    <svg width="300" height="180">
+      <circle cx="30" cy="50" r="25"/>
+      <circle cx="90" cy="50" r="25" class="red"/>
+      <circle cx="150" cy="50" r="25" class="fancy"/>
+
+      <rect x="10" y="80" width="40" height="40" fill="steelBlue"/>
+      <rect x="70" y="80" width="40" height="40" style="fill: steelBlue" />
+      <rect x="130" y="80" width="40" height="40" class="fancy"/>
+
+    </svg>
+
+    <!-- Like HTML's <div> and <span> tags, the <g> tag is for an arbitrary group-->
+
+    <svg width="300" height="180">
+      <g transform="translate(5, 25)">  <!-- Position -->
+        <text x="0" y="0">Howdy!</text>
+      </g>
+
+      <g transform="translate(5, 55)">
+        <!-- M: move to (jump)
+             L: line to
+             Q: curve to (quadratic) -->
+        <path d="M0, 50 L50, 0 Q100, 0 100,50"
+         fill="none" stroke-width="3" stroke="black" />
+        </g>
+
+      <g transform="translate(5, 105)">
+        <!-- C: curve to (cubic)
+             Z: close shape -->
+        <path d="M0,100 C0,0 25,0 125,100 Z" fill="black" />
+      </g>
+
+    </svg>
+
+  <!-- Begin Javascript -->
+  <script type="text/javascript">
+
+  </script>
+  <!-- End Javascript -->
+
+  </body>
+</html>
+
+
+

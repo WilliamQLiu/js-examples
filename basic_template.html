@@ -9,19 +9,92 @@
   <!-- CSS (Styling) -->
   <style type="text/css">
 
+  /* Applied to all <p> tags */
+  p {
+    color: blue;
+  }
+
+  /* Applied to all tags with the class "red" */
+  .red {
+    background: red;
+  }
+
+  /* Applied to the tag with the id "some-id" */
+  #some-id {
+    font-style: italic;
+  }
+
+  /* Applied only to <p> tags that are inside <li> tags */
+  li pi {
+    color: #0C0;
+  }
+
   </style>
   <!-- End CSS (Styling) -->
 
   <body>
-    <h2>Header</h2>
-    <p>This is a data visualization</p>
-    <h3></h3>
+
+  <div>
+    <p>Normal Paragraph</p>
+    <p class="red">Red paragraph</p>
+  </div>
+
+  <ol>
+    <li id="some-id">Unique element</li>
+    <li>Another list element</li>
+    <li>
+      <p>Paragraph inside list element</p>
+      <p>Second paragraph</p>
+    </li>
+  </ol>
+
+  <!-- Using listeners -->
+  <h1 id="click-me">Click on me!</h1>
+  <p class="hover-me">Hover over me!</p>
 
   <!-- Begin Javascript -->
   <script type="text/javascript">
+
+  /*
+  // DOM API for Selection - Example 1
+  document.getElementById('some-id');  // <li id="some-id">Unique element</li>
+  document.getElementsByTagName('p').length;  // 4
+  var reds = document.getElementsByClassName('red');
+  reds[0].innerText // "Red paragraph"
+  */
+
+  // D3 API for Selection - Example 1
+  d3.select('p').size(); // select() only finds one (e.g. 1)
+  d3.selectAll('p').size(); // selectAll() finds all (e.g. 4)
+  var reds = d3.selectAll('.red');  // [ > Array[1]]
+  reds.text();  // "Red paragraph"
+
+  /*
+  // DOM API for Hover - Example 2
+  var clickMe = document.getElementById('click-me');
+  clickMe.onclick = function() {
+    if (this.style.backgroundColor) {
+      this.style.backgroundColor = '';
+    } else {
+      this.style.backgroundColor = 'red';
+    }
+  }
+  */
+
+  // D3 API for Hover - Example 2
+  d3.selectAll('.hover-me')
+    .on('mouseover', function() {
+      this.style.backgroundColor = 'yellow';
+    })
+    .on('mouseleave', function() {
+      this.style.backgroundColor = '';
+    });
 
   </script>
   <!-- End Javascript -->
 
   </body>
 </html>
+
+
+
