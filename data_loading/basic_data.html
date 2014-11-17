@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<!--  Run a Python script like: python -m SimpleHTTPServer 8000
+      Then check on localhost:8000 -->
+<html>
+
+  <head>
+    <!-- Load D3 from site -->
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+    <!-- CSS (Styling) -->
+    <style type="text/css">
+    </style>
+  </head>
+
+  <body>
+    <!-- Begin Javascript -->
+    <script type="text/javascript">
+      // d3.text - can also take a middle parameter (mime type)
+      // d3.json
+      // d3.html
+      // d3.xml - can also take a middle parameter (mime type)
+      // d3.csv
+      // d3.tsv
+
+      d3.csv("sales.csv", function(d) {
+        d3.select("body").selectAll("p")
+            .data(d)
+            .enter()
+            .append("p")
+            .text(function (d) {
+              return d.name + ": " + d.sales;
+            });
+      });
+
+    </script>
+  </body>
+
+</html>

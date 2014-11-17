@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<!-- Load data from csv, parse a date, plot using shape generators
+     Generates a single shape that we used to generate our shapes from multiple points (dataset)
+
+ -->
+<html>
+
+  <head>
+    <!-- Load D3 from site -->
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+    <!-- CSS (Styling) -->
+    <style type="text/css">
+      body {
+        margin: 0;
+        font-family: sans-serif;
+        font-size: 11px;
+      }
+      .axis path, .axis line{
+        fill: none;
+        stroke: #474747;
+        shape-rendering: crispEdges;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Begin Javascript -->
+    <script type="text/javascript">
+      var svg = d3.select("body").append("svg")
+          .attr({
+            width: window.innerWidth,
+            height: window.innerHeight
+          });
+
+      // Parses a date string (e.g. in format 2009) into an actual datetime
+      var parse = d3.time.format("%Y").parse;
+
+      d3.csv("calls.csv", function(d) { d.year = parse(d.year); return d; }, function (dataset) {
+          //console.log(data);  // See that data is loading in console
+
+          // Our X Scale
+          var yearScale = d3.time.scale()  // Instead of a normal number, this takes a JS date
+              .domain(d3.extent(dataset, function (d) { return d.year; }))  // extent is combo of min and max
+              .range([50, window.innerWidth - 50]);
+
+          // Our Y Scale
+          var callScale = d3.scale.linear()
+              .domain([0, d3.max(dataset, function (d) { return d.calls; })])
+              .range([50, window.innerHeight - 50]);
+
+          // Create a line on the top of the graph
+          svg.append("line")
+              .attr({
+                x1: 50,
+                y1: 50,
+                x2: window.innerWidth - 50,
+                y2: 50,
+                fill: "none",
+                stroke: "#474747"
+              });
+
+          // Creates a line that connects the dots between the points (using shape generators)
+          var myline = d3.svg.line()
+              .x(function (d) { return yearScale(d.year); })
+              .y(function (d) { return window.innerHeight - callScale(d.calls); });
+
+          svg.append("path")
+              .data([dataset])  // Uses the same data that our circles took, but want it all in one array to treat as a single piece of data
+              .attr({
+                d: myline,  // myline generates a string that matches the path's parameter
+                fill: "none",
+                stroke: "#78B446",
+                "stroke-width": 4
+              });
+
+          // Creates an area fill for the line path (using shape generators)
+          var myarea = d3.svg.area()
+              .x(function (d) { return yearScale(d.year); })
+              .y0(window.innerHeight - 50)
+              .y1(function (d) { return window.innerHeight - callScale(d.calls); });
+
+          svg.append("path")
+              .data([dataset])
+              .attr({
+                d: myarea,
+                fill: "#C3E4A8",
+                stroke: "none"
+              });
+
+          // Set our Axis and makes the ticks go really high up
+          var yearAxis = d3.svg.axis().scale(yearScale)
+              .tickSize( 100 - window.innerHeight)  // Reverses direction that ticks are in
+              .orient("bottom");
+
+          svg.append("g")
+              .attr({
+                "class": "axis",
+                "transform": "translate(" + [0, window.innerHeight - 50] + ")"
+              }).call(yearAxis);
+
+          // Create our circles to represent the dataset
+          svg.selectAll("circle")
+              .data(dataset)  // Uses the same data that our circles took, but want it all in one array to treat as a single piece of data
+              .enter()
+              .append("circle")
+              .attr({
+                  cx: function (d) { return yearScale(d.year); },
+                  cy: function (d) { return window.innerHeight - callScale(d.calls); },
+                  r: 4,
+                  fill: "#fff",
+                  stroke: "#78B446",
+                  "stroke-width": 4 // Need quotes because it has a hyphen
+              });
+      });
+
+    </script>
+  </body>
+
+</html>
