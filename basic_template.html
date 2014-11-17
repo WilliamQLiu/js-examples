@@ -4,33 +4,35 @@
   <head>
     <!-- Load D3 from site -->
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-  </head>
 
-  <!-- CSS (Styling) -->
-  <style type="text/css">
 
-  /* Applied to all <p> tags */
-  p {
-    color: blue;
-  }
+    <!-- CSS (Styling) -->
+    <style type="text/css">
 
-  /* Applied to all tags with the class "red" */
-  .red {
-    background: red;
-  }
+    /* Applied to all <p> tags */
+    p {
+      color: blue;
+    }
 
-  /* Applied to the tag with the id "some-id" */
-  #some-id {
-    font-style: italic;
-  }
+    /* Applied to all tags with the class "red" */
+    .red {
+      background: red;
+    }
 
-  /* Applied only to <p> tags that are inside <li> tags */
-  li pi {
-    color: #0C0;
-  }
+    /* Applied to the tag with the id "some-id" */
+    #some-id {
+      font-style: italic;
+    }
 
-  </style>
-  <!-- End CSS (Styling) -->
+    /* Applied only to <p> tags that are inside <li> tags */
+    li pi {
+      color: #0C0;
+    }
+
+    </style>
+    <!-- End CSS (Styling) -->
+
+    </head>
 
   <body>
 
@@ -54,6 +56,36 @@
 
   <!-- Begin Javascript -->
   <script type="text/javascript">
+
+  /* Basic D3 Updating Pattern for taking data and binding to elements */
+  var dataset = [8, 48, 14, 31, 23];
+
+  svg = d3.select("body").append("svg").attr({
+    width: 600,
+    height: 400
+  });
+
+  svg.selectAll("rect")  // Begin by selecting a set of elements (say 'rect.bars', rect with class bars)
+    .data(dataset)  // Bind our dataset to the data() method, can be say d3.range(5)
+    .enter()  // Returns placeholders for our missing elements
+    .append("rect")  // Creates the new rectangles
+    .attr({  // Give attributes
+      x: function(d, i) { return i * 101; },
+      y: function(d, i) { return 400 - (d * 5)},  // Notice that y is upside down
+      width: 100,
+      height: function(d) { return d * 5},
+      fill: "orange"
+    });
+
+  /* Add more data */
+  var moreData = d3.range(4);  // Sets properties, but doesn't come in until enter() method
+  var rects = svg.selectAll("rect").data(moreData);
+
+  rects.attr("fill", "#ccc");  // Changes color, but only for the ones we've selected
+  rects.enter();  // Only gets the data you selected
+  rects.exit().attr("fill", "blue");  // Fill color for data that you didn't select
+  //rects.exit().remove();  // Remove elements that you no longer need
+
 
   /*
   // DOM API for Selection - Example 1

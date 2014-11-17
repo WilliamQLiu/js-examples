@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <!-- Load D3 from site -->
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+    <!-- CSS (Styling) -->
+    <style type="text/css">
+    </style>
+  </head>
+
+  <body>
+    <!-- Begin Javascript -->
+    <script type="text/javascript">
+
+    // Our image will use the full size of the screen
+    var svg = d3.select("body").append("svg").attr({
+      width: window.innerWidth,
+      height: window.innerHeight
+    });
+
+    var dataset = [1, 5, 2, 4, 3, 8];
+
+    /*
+    // Without a Scale
+    svg.selectAll("rect")
+        .data(dataset)
+        .enter()
+        .append("rect")
+        .attr({
+          width: 100,
+          height: function(d) { return d; },
+          x: function(d, i) { return i * 101; },
+          y: 20
+        });
+    // End Without a Scale
+    */
+
+    // With a Scale (2 stops, min and max)
+    var heightScale = d3.scale.linear()  // Done via a linear algebraic function (y = mx + b)
+        //.domain([0, 10])  // Says minimum and maximum of size
+        .domain([0, d3.max(dataset)])
+        .range([0, window.innerHeight - 40]);
+        // Can verify on console with: heightScale(10) and it'll return back say 553
+        // Can limit to the window values with: heightScale.clamp(true)
+        // Can also check smaller functions on console like: d3.max(dataset)
+
+    // With a Scale (3 stops, kinda like a gradient)
+    var heightScaleThree = d3.scale.linear()
+        .domain([-10, 0, 10])  // Notice the three stops
+        .range([-1, 0, 100]);  // Notice mapping to three stops
+
+    var heightScalePixels = d3.scale.linear()
+        .domain([0, 100])
+        .range(["0px", "50px"]);  // Can map to a range of pixels
+
+    var heightScaleDollars = d3.scale.linear()
+        .domain([0, 100])
+        .range(["$0", "$500"]);  // Can map to a range of dollars - errors?
+
+    var scaleColors = d3.scale.linear()
+        .domain([0, d3.max(dataset)])
+        .range(["red", "blue"]);  // Can map to a range of colors
+
+
+    svg.selectAll("rect")
+        .data(dataset)
+        .enter()
+        .append("rect")
+        .attr({
+          width: 100,
+          height: heightScale,  // heightScaleThree, heightScalePixels, heightScaleDollars..
+          x: function(d, i) { return i * 101; },
+          y: 20,
+          fill: scaleColors
+        });
+    // End Without a Scale
+
+
+    </script>
+
+  </body>
+
+</html>

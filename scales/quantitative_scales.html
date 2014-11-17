@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <!-- Load D3 from site -->
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+    <!-- CSS (Styling) -->
+    <style type="text/css">
+    </style>
+  </head>
+
+  <body>
+    <!-- Begin Javascript -->
+    <script type="text/javascript">
+
+      // Use full size of the screen
+      var svg = d3.select("body").append("svg").attr({
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+
+      var padding = 10;
+      var radius = 4;
+      var dataset = d3.range(100);
+
+      // We'll be plotting a lot of circles to show difference Y Scales
+
+
+      // Quantitative Scale
+      var cxScale = d3.scale.linear()
+          .domain([0, d3.max(dataset)])
+          .range([padding + radius/2, window.innerWidth - padding - radius/2]);
+
+      // Y is a Linear Scale
+      /*
+        var cyScale = d3.scale.linear()
+          .domain([0, d3.max(dataset)])
+          .range([window.innerHeight - padding - radius/2, padding + radius/2]);
+      */
+
+      // Y is a Square Root / Power Scale
+      var cyScale = d3.scale.pow().exponent(0.5) // Exponent of half is equal to square root
+          //d3.scale.sqrt()  // Can also do a square root scale
+          .domain([0, d3.max(dataset)])
+          .range([window.innerHeight - padding - radius/2, padding + radius/2]);
+
+      svg.selectAll("circle")
+          .data(dataset)
+          .enter()
+          .append("circle")
+          .attr({
+            cx: cxScale,
+            cy: cyScale,
+            r: radius
+          });
+
+    </script>
+  </body>
+
+</html>
