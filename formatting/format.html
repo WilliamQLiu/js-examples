@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<!-- Format your numbers and data in appropriate ways using d3.format -->
+<html>
+
+  <head>
+    <!-- Load D3 from site -->
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+    <!-- CSS (Styling) -->
+    <style type="text/css">
+    </style>
+  </head>
+
+  <body>
+    <!-- Begin Javascript -->
+    <script type="text/javascript">
+
+    // Pad your number and align
+    f = d3.format("_<20");
+    // Set alignment with the either < for left, ^ for middle, > for right
+    // Number represents the total number of characters
+    console.log(d3.format(" ^20")(100));  //          100
+    console.log(d3.format(" >20")(100));  //                   100
+    console.log(d3.format(" <20")(100));  //  100
+
+    // Add sign (plus or minus)
+    console.log(d3.format(" <+20")(100));  //  +100
+    console.log(d3.format(" <-20")(100));  //  -100
+
+    // Add commas in numbers
+    console.log(d3.format(" <+20,")(1000000));  //  +1,000,000
+
+    // Add Precision (depends on the number you have)
+    console.log(d3.format(" <+20,.3f")(10003.14159));  //  +10,003.142
+
+    // Format using d3.format("fill align sign width comma . precision type")
+    d3.format("o")(8);  // 10; Convert to octal
+    d3.format("b")(10);  // 1010; Convert to binary
+    d3.format("x")(10);  // a; Convert to hexademical
+    d3.format("c")(65);  // a; get the character
+
+    </script>
+  </body>
+
+</html>
