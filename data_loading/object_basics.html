@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<!-- D3 has 3 main functions to work with objects (keys, values, entries)
+     Objects also have maps -->
+<html>
+
+  <head>
+    <!-- Load D3 from site -->
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+    <!-- CSS (Styling) -->
+    <style type="text/css">
+    </style>
+  </head>
+
+  <body>
+    <!-- Begin Javascript -->
+    <script type="text/javascript">
+
+      //////// OBJECTS ////////
+      // Create object
+      var myobject = { name: "John Doe", age: 30, occupation: "data analyst" };
+
+      // Keys returns all the keys an object has
+      console.log(d3.keys(myobject));  // ["name", "age", "occupation"]
+
+      // Values returns all the values that an object has
+      console.log(d3.values(myobject));  //  ["John Doe", 30, "data analyst"]
+
+      // Entries returns all the entries (keys and values) that an object has
+      console.log(d3.entries(myobject));
+      // [Object, Object, Object]
+      //  0: Object
+      //     key: "name"
+      //     value: "John Doe"
+      //  1: Object
+      //     key: "age"
+      //     value: 30
+      //  2: Object
+      //     key: "occupation"
+      //     value: "data analyst"
+
+
+      //////// MAPS ////////
+      // D3 allows maps (a stricter version of an object) that allows methods to interact with it
+      q = d3.map(myobject);
+
+      // Methods to interact with maps
+      console.log(q);  // u { name: "John Doe", age: 30, occupation: "data analyst"}
+      console.log(q.has("name"));  // true; there is a key with this
+      console.log(q.has("John Doe"));  // false; there is no key with this, only a value
+      console.log(q.get("name"));  // John Doe; gets the value of the matching key
+      console.log(q.set("age", 31));  //  31; q is now: u {name: "John Doe", age: 31, occupation: "data analyst"}
+      console.log(q.remove("age"));  // Can also remove values, now: u{name: "John Doe", occupation: "data analyst"}
+      console.log(q.keys());  //  ["name", "occupation"]
+      console.log(q.values());  // ["John Doe", "data analyst"]
+      console.log(q.entries());  // [Object, Object]
+      q.forEach(function (d) { console.log(d); });
+      // name
+      // occupation
+      q.forEach(function (k, v) { console.log(k, v); });
+      // name John Doe
+      // occupation data analyst
+      console.log(typeof q);  // object
+    </script>
+  </body>
+
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<!-- D3 has many ways of working with arrays
+     Arrays also have sets -->
+<html>
+
+  <head>
+    <!-- Load D3 from site -->
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+    <!-- CSS (Styling) -->
+    <style type="text/css">
+    </style>
+  </head>
+
+  <body>
+    <!-- Begin Javascript -->
+    <script type="text/javascript">
+
+    //////// ARRAYS ////////
+    // Create an array
+    var a = [1, 12, 7, 82, 34, 18, 65, 8, 56, 32, 40, 78, 9, 21, 90, 20, 4]
+
+    console.log(a);  // [1, 12, 7, 82, 34, 18, 65, 8, 56, 32, 40, 78, 9, 21, 90, 20, 4] array_tricks.html:20
+
+    // By default, sorts using an alphabetic sorting instead of numeric
+    console.log(a.sort());  // [1, 12, 18, 20, 21, 32, 34, 4, 40, 56, 65, 7, 78, 8, 82, 9, 90]
+
+    // Using D3, we can sort by ascending and descending (Note: it changes original array)
+    console.log(a.sort(d3.descending));  // [90, 82, 78, 65, 56, 40, 34, 32, 21, 20, 18, 12, 9, 8, 7, 4, 1]
+    console.log(a.sort(d3.ascending));  // [1, 4, 7, 8, 9, 12, 18, 20, 21, 32, 34, 40, 56, 65, 78, 82, 90]
+
+    // D3 also has min, max, extent, sum, mean, median
+    console.log(d3.min(a));  // Minimum Value  1
+    console.log(d3.max(a));  // Maximum Value  90
+    console.log(d3.extent(a)); // This returns the min and max  [1, 90]
+    console.log(d3.sum(a));  // Sums all the values of array  577
+    console.log(d3.mean(a));  // Mean  33.94117647058823
+    console.log(d3.median(a));  // Median  21
+
+    // Quantiles - remember to sort first
+    console.log(d3.quantile(a, 0.5));  // Would get second quantile, value 21
+    console.log(d3.quantile(a, 0.25));  // Would get first quantile, value 9
+
+    // Bisect takes an array and another value, then tells you at what point you have to put that value to keep it sorted
+    console.log(d3.bisect(a, 5));  // value of 2 because of array [1, 4, 7, 8, 9...], says to put 5 between 4 and 7
+    console.log(d3.bisectRight(a, 1));  // Where to insert if there's a duplicate (e.g. two 1's, put on right)
+    console.log(d3.bisectLeft(a, 1));  // Where to insert if there's a duplicate (e.g. two 1's, put on left)
+
+    console.log(d3.shuffle(a));  // Randomly shuffle an array [18, 90, 56, 12, 82, 7, 34, 65, 78, 20, 1, 9, 40, 21, 32, 4, 8]
+
+    //////// SETS ////////
+    myset = d3.set(a);  // Create a set,
+    console.log(myset);  // v {1: true, 4: true, 7: true... }
+
+    console.log(myset.has(1));  // true; checks if this value exists in the set
+    console.log(myset.add(2));  // 2; adds this value to set (note: no duplicates are allowed in sets)
+    console.log(myset.remove(1));  // true; removed value of 1
+    console.log(myset.values());  //  ["2", "4", "7", "8", "9", "12", "18", "20", "21", "32", "34", "40", "56", "65", "78", "82", "90"]
+    myset.forEach(function (v) {
+        console.log(parseInt(v) * 2);  // Say we're just multiplying by 2, currently v values are strings
+    });
+
+    //////// ADVANCED ARRAYS /////////
+    e = d3.merge([a, ["a", "b", "c"], ["d", "e"]]);  // Can merge multiple arrays
+    console.log(e);  // [7, 65, 32, 1, 20, 40, 21, 90, 56, 78, 82, 8, 4, 9, 18, 12, 34, "a", "b", "c", "d", "e"]
+    console.log(d3.range(10));  // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]; goes from 0 to n-1
+    console.log(d3.range(5, 10));  // [5, 6, 7, 8, 9]; give start and end for range
+    console.log(d3.range(5, 20, 3));  // [5, 8, 11, 14, 17]; give start, end, and interval/spacing
+
+    // Permute takes two arrays, first the array of values we want to use, the second is a list of indexes for the first array
+    e = d3.permute(["a", "b", "c"], [2, 0, 1, 0, 1]);  // Good for reordering an array in a specifc way
+    console.log(e);  // ["c", "a", "b", "a", "b"]
+
+    // Matrix - Can do a lot of advanced math with this
+    m = d3.zip([0,1,2], [3,4,5], [6,7,8]);  // [Array[3], Array[3], Array[3]]
+    console.log(m);
+    // Array 0    0: 0, 1: 3, 2: 6
+    // Array 1    0: 1, 1: 4, 2: 7
+    // Array 2    0: 2, 1: 5, 2: 8
+
+    t = d3.transpose(m);  // Turn matrix on its side
+    console.log(t);  // [Array[3], Array[3], Array[3]]
+    // Array 0    0: 0, 1: 1, 2: 2
+    // Array 1    0: 3, 1: 4, 2: 5
+    // Array 2    0: 6, 1: 7, 2: 8
+
+    p = d3.pairs(a);  // Returns a match of every pair in the order we had our array in
+    console.log(a);  // [18, 21, 20, 65, 32, 8, 1, 9, 40, 90, 82, 56, 7, 12, 4, 78, 34]
+    console.log(p);  // [Array[2], Array[2], Array[2], Array[2], Array[2], Array[2], Array[2], Array[2], Array[2], Array[2], Array[2], Array[2], Array[2], Array[2], Array[2], Array[2]]
+    // Array 0    0: 18, 1: 21
+    // Array 1    0: 21, 1: 20
+    // Array 2    0: 20, 1: 65
+    // ...
+
+    </script>
+  </body>
+
+</html>
