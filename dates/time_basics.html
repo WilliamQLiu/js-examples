@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <!-- Load D3 from site -->
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+    <!-- CSS (Styling) -->
+    <style type="text/css">
+    </style>
+  </head>
+
+  <body>
+    <!-- Begin Javascript -->
+    <script type="text/javascript">
+
+    // Returns a formatting object
+    f = d3.time.format("%Y-%m-%d");  // Returns formatter of: %Y-%m-%d
+    console.log(f(new Date));  // "2014-11-18"
+    f.parse("2012-01-01");  // Can also pass in a date and get a JavaScript date object back
+
+    // D3 has lots of different time intervals, can find a specific point in an interval
+    // d3.time. second, minute, hour, day, week, sunday, monday, month, year, gets time interval closest to it
+
+    // Get Nearest Time
+    console.log(d3.time.month(new Date));  // Sat Nov 01 2014 00:00:00 GMT-0400 (EDT); Closest
+    console.log(d3.time.monday(new Date));  // Mon Nov 17 2014 00:00:00 GMT-0500 (EST); Closest
+    console.log(d3.time.monday.floor(new Date));  // Mon Nov 17 2014 00:00:00 GMT-0500 (EST); Round Down
+    console.log(d3.time.monday.ceil(new Date));  // Mon Nov 24 2014 00:00:00 GMT-0500 (EST); Round Up
+
+    // Time Intervals
+    myinterval = d3.time.year.range(new Date(2000,0,1), new Date);  // Every Year
+    console.log(myinterval);  // [Sat Jan 01 2000, Mon Jan 01 2001, ...]
+    myinterval = d3.time.year.range(new Date(2000,0,1), new Date).map(d3.time.format("%Y-%m-%d"));
+    console.log(myinterval);  // ["2000-01-01", "2001-01-01", "2002-01-01" ..., "2014-01-01"]
+    myinterval = d3.time.month.range(new Date(2000,0,1), new Date, 4).map(d3.time.format("%Y-%m-%d"));  // 4 Month Intervals
+    console.log(myinterval);  // ["2000-01-01", "2000-05-01", "2000-09-01", "2001-01-01"..., "2014-09-01"]
+    myinterval = d3.time.day.range(new Date(2013,0,1), new Date(2013,0,7)).map(d3.time.format("%m-%d (%A)")) // Month-Day, Day Name
+    console.log(myinterval);  // ["01-01 (Tuesday)", "01-02 (Wednesday)", "01-03 (Thursday)", "01-04 (Friday)", "01-05 (Saturday)", "01-06 (Sunday)"]
+
+    </script>
+  </body>
+
+</html>
