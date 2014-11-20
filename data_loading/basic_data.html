@@ -15,13 +15,18 @@
   <body>
     <!-- Begin Javascript -->
     <script type="text/javascript">
-      // d3.text - can also take a middle parameter (mime type)
-      // d3.json
-      // d3.html
-      // d3.xml - can also take a middle parameter (mime type)
-      // d3.csv
-      // d3.tsv
 
+      /* D3.js has a lot of different ways to load data, including:
+         d3.text - can also take a middle parameter (mime type)
+         d3.json
+         d3.html
+         d3.xml - can also take a middle parameter (mime type)
+         d3.csv
+         d3.tsv
+      */
+
+      // Very basic way of loading quick data: note you still need to start SimpleHTTPServer first
+      // As soon as data is loaded, it uses the 'callback function' function (d) and executes from there
       d3.csv("sales.csv", function(d) {
         d3.select("body").selectAll("p")
             .data(d)
@@ -31,6 +36,34 @@
               return d.name + ": " + d.sales;
             });
       });
+
+      /* D3 data loading methods are asynchronous, so functions should 'callback' when data is loaded
+       This detailed way also handles data loading errors */
+      var mydataset;  // Global variable
+
+      d3.csv("sales.csv", function(error, data) {
+        if (error) {
+          // If error is not null, something went wrong
+          console.log("There's an issue!")
+        }
+
+        else {
+          // If no error, the file loaded correctly
+          mydataset = data;  // Once loaded, copy to global variable so accessible outside this function
+          console.log(mydataset);
+          generateVis();  // Then call other functions that
+          hideLoadingMsg();  // depend on data being present
+        }
+      });
+
+      function generateVis() {
+        console.log("Loading the data visualization");
+      }
+
+      function hideLoadingMsg() {
+        console.log("Hiding the loading message");
+      }
+
 
     </script>
   </body>

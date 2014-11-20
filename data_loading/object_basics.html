@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <!-- D3 has 3 main functions to work with objects (keys, values, entries)
-     Objects also have maps -->
+    Arrays use [] and Objects use {}
+    Arrays are good for simple lists of data, but for more complex stuff, use Objects
+    Objects also have maps -->
 <html>
 
   <head>
@@ -18,7 +20,14 @@
 
       //////// OBJECTS ////////
       // Create object
-      var myobject = { name: "John Doe", age: 30, occupation: "data analyst" };
+      var myobject = {
+        name: "John Doe",
+        age: 30,
+        occupation: "data analyst"
+      };
+
+      // Access an object variable value with:
+      console.log(myobject.name);  // John Doe
 
       // Keys returns all the keys an object has
       console.log(d3.keys(myobject));  // ["name", "age", "occupation"]
