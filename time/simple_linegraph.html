@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <!-- Load D3 from site -->
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+    <!-- CSS (Styling) -->
+    <style type="text/css">
+
+      /* CSS is made up of 'selectors' and 'declarations' (e.g. select body, make font Arial) */
+      body {
+        font: 12 Arial;
+      }
+
+      path {
+        stroke: green;
+        stroke-width: 3;
+        fill: none;
+      }
+
+      .axis path, .axis line {
+        fill: none;
+        stroke: grey;
+        stroke-width: 1;
+        shape-rendering: crispEdges;
+      }
+
+    </style>
+  </head>
+
+  <body>
+    <!-- Begin Javascript -->
+    <script type="text/javascript">
+
+    // Setup dimensions of canvas (margins ensure we have room for things like axis and labels)
+    var margin = { top: 30, right: 30, bottom: 30, left: 50},
+        width = 600 - margin.left - margin.right,
+        height = 400 - margin.top - margin.bottom;
+
+    var mydataset;  // Global variable to hold data once it's loaded
+
+    // Function to parse the string to a javascript datetime
+    var parseDate = d3.time.format("%b %Y").parse;  // "Jan 2011" to "Sat Jan 01 2011 00:00:00 GMT-0500 (EST)"
+
+    // Set the ranges
+    var x = d3.time.scale().range([0, width]);
+    var y = d3.scale.linear().range([height, 0]);
+
+    // Define the axes
+    var xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(5);
+    var yAxis = d3.svg.axis().scale(y).orient("left").ticks(5);
+
+    // Define the line with the default x and y functions used to draw a path
+    var myline = d3.svg.line()
+        .x(function (d) {
+          return x(d.date);
+        })
+        .y(function (d) {
+          return y(d.calls);
+        });
+
+    // Load the data
+    d3.csv("calls.csv", function(error, data) {
+      if (error) {  // If error is not null, something went wrong
+        console.log("Something went wrong! " + error);
+      }
+      else {  // If no error, the file loaded correctly
+
+        // Ensures that dates and numbers are pulled out of file correctly
+        data.forEach(function (d) {  // Goes through each array/row
+          d.date = parseDate(d.date);
+          d.calls = +d.calls;
+        });
+
+        // Scale the range of the data
+        x.domain(d3.extent(data, function (d) {
+          return d.date;
+        }));
+        y.domain([0, d3.max(data, function (d){
+          return d.calls;
+        })]);
+
+        mydataset = data;  // Once loaded, copy to global variable so accessible outside this function
+
+        // Adds the svg canvas
+        var mysvg = d3.select("body")
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        // Add the line path
+        mysvg.append("path")
+            .attr("class", "line")
+            .attr("d", myline(mydataset));
+
+        // Add the X-Axis
+        mysvg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
+
+        // Add the Y-Axis
+        mysvg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis);
+        }
+
+        generateVis();  // Then call other functions that
+        hideLoadingMsg();  // depend on data being present
+
+    });
+
+    // Make the visualization
+    function generateVis() {
+      console.log("Loading the data visualization");
+    }
+
+
+    function hideLoadingMsg() {
+      console.log("Hiding the loading message");
+    }
+
+
+
+    </script>
+  </body>
+
+</html>

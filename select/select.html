@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<!-- Read up in detail about D3 selectors: https://github.com/mbostock/d3/wiki/Selections#d3_select
+  1.) D3 selects elements using CSS3; Select a tag ("div"), class (".awesome"), unique identifier ("#foo"_,
+  attribute ([color]=red"), or containment ("parent child").
+  2.) After selecting elements, you apply 'operators' to the selections in order to do stuff.  Operators
+  can get or set attributes, styles, properties, HTML and text content.  Attribute values are specified as
+  either constants or functions (if a function, then its evaluated for each element)
+  3.) You can also join selections to data (so that operators are working with data), which allows you to do
+  enter() and exit() subselections (to add or remove elements in response to changes in data)
+-->
+
+<html>
+
+  <head>
+    <!-- Load D3 from site -->
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+    <!-- CSS (Styling) -->
+    <style type="text/css">
+    </style>
+  </head>
+
+  <body>
+    <!-- Begin Javascript -->
+    <script type="text/javascript">
+
+      var dataset = [5, 10, 15, 20, 25];
+
+      // D3 selects elements using CSS3 (first using select, all using selectAll) and Nodes (useful for integration with jQuery)
+      d3.select("body")  // Finds the body in the DOM and hands off reference to the next step in the chain
+          .selectAll("p")  // Selects all paragraphs in the DOM (but since none exist yet), returns an empty selection (think of this as representing paragraphs that will soon exist)
+          .data(dataset)  // Counts and parses the data values (there's five values in our array, so everything past this point is executed gives times, one for each value)
+          .enter()  // This looks at the current DOM selection, compares to the data being handed to it; if more data values than DOM elements, then enter() creates placeholder elements
+          .append("p")  // Takes the empty placeholder selection created by enter() and appends a 'p' element into the DOM
+          //.text("New Paragraph");  // Takes the reference to the newly created 'p' element and inserts a text value
+          .text(function(d) { // Here we're adding in an 'anonymous' function to the text method, good for accessing individual data values and calculating dynamic properties
+            return "I can count up to " + d;  // d needs to be wrapped in an anonymous function or else there's no value there
+          });
+
+      // .text(), attr() and other methods take a function as an argument
+
+    </script>
+  </body>
+
+</html>
