@@ -25,7 +25,7 @@
          d3.tsv
       */
 
-      // Very basic way of loading quick data: note you still need to start SimpleHTTPServer first
+      // Option 1 - Very basic way of loading quick data: note you still need to start SimpleHTTPServer first
       // As soon as data is loaded, it uses the 'callback function' function (d) and executes from there
       d3.csv("sales.csv", function(d) {
         d3.select("body").selectAll("p")
@@ -37,14 +37,14 @@
             });
       });
 
-      /* D3 data loading methods are asynchronous, so functions should 'callback' when data is loaded
+      /* Option 2 - D3 data loading methods are asynchronous, so functions should 'callback' when data is loaded
        This detailed way also handles data loading errors */
       var mydataset;  // Global variable
 
       d3.csv("sales.csv", function(error, data) {
         if (error) {
           // If error is not null, something went wrong
-          console.log("There's an issue!")
+          console.log(error);
         }
 
         else {

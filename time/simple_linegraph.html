@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<meta charset= "utf-8" >
 <html>
 
   <head>
@@ -14,7 +15,7 @@
       }
 
       path {
-        stroke: green;
+        stroke: blue;
         stroke-width: 3;
         fill: none;
       }
@@ -34,34 +35,35 @@
     <script type="text/javascript">
 
     // Setup dimensions of canvas (margins ensure we have room for things like axis and labels)
-    var margin = { top: 30, right: 30, bottom: 30, left: 50},
+    var margin = { top: 50, right: 30, bottom: 50, left: 50},
         width = 600 - margin.left - margin.right,
         height = 400 - margin.top - margin.bottom;
 
-    var mydataset;  // Global variable to hold data once it's loaded
+    // Adds the svg canvas that D3 will draw on - we call it here so it can 'save' the spot while data is loading
+    var mysvg = d3.select("body")  // The select means where we'll place this (e.g. body element)
+        .append("svg")  // We're going to add a new svg element to the DOM
+        .attr("width", width + margin.left + margin.right)  // With this attr
+        .attr("height", height + margin.top + margin.bottom)  // And with this attr
+        .append("g")  // Use 'g' as a grouping element to group together several related elements (top left hand corner); this way when we draw on canvas, can reference point 'g'
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");  // Transformed by moving (translating) to the point margin.left, margin.top (top left)
 
-    // Function to parse the string to a javascript datetime
-    var parseDate = d3.time.format("%b %Y").parse;  // "Jan 2011" to "Sat Jan 01 2011 00:00:00 GMT-0500 (EST)"
+    var mydataset;  // Global variable to hold data once it's loaded, allows all functions to access data
 
-    // Set the ranges
-    var x = d3.time.scale().range([0, width]);
-    var y = d3.scale.linear().range([height, 0]);
+    // Set the ranges (i.e. make sure that our data values fit into the screen)
+    // range() generates an array containing a sequence of numeric or integer values
+    var x_range = d3.time.scale().range([0, width]);  // Datetime value, need to scale to our
+    var y_range = d3.scale.linear().range([height, 0]);  // Scaling a numeric value, note: y needs to be reverse since 0,0 is top left
 
-    // Define the axes
-    var xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(5);
-    var yAxis = d3.svg.axis().scale(y).orient("left").ticks(5);
-
-    // Define the line with the default x and y functions used to draw a path
-    var myline = d3.svg.line()
-        .x(function (d) {
-          return x(d.date);
-        })
-        .y(function (d) {
-          return y(d.calls);
-        });
+    // Define the axes (notice it takes into account the ranges defined earlier)
+    var x_axis = d3.svg.axis().scale(x_range).orient("bottom").ticks(5);
+    var y_axis = d3.svg.axis().scale(y_range).orient("left").ticks(10);
 
     // Load the data
     d3.csv("calls.csv", function(error, data) {
+
+      // Function to parse the string to a javascript datetime
+      var parseDate = d3.time.format("%b %Y").parse;  // "Jan 2011" to "Sat Jan 01 2011 00:00:00 GMT-0500 (EST)"
+
       if (error) {  // If error is not null, something went wrong
         console.log("Something went wrong! " + error);
       }
@@ -69,61 +71,85 @@
 
         // Ensures that dates and numbers are pulled out of file correctly
         data.forEach(function (d) {  // Goes through each array/row
-          d.date = parseDate(d.date);
+          d.date = parseDate(d.date);  // calls our function parseDate to return a string
           d.calls = +d.calls;
         });
 
         // Scale the range of the data
-        x.domain(d3.extent(data, function (d) {
+        // The extent() gets the min and max values in the dataset
+        // The domain() returns the max and min values to D3 as the range for
+        x_range.domain(d3.extent(data, function (d) {
           return d.date;
         }));
-        y.domain([0, d3.max(data, function (d){
+        y_range.domain([0, d3.max(data, function (d){
           return d.calls;
         })]);
 
         mydataset = data;  // Once loaded, copy to global variable so accessible outside this function
-
-        // Adds the svg canvas
-        var mysvg = d3.select("body")
-            .append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-        // Add the line path
-        mysvg.append("path")
-            .attr("class", "line")
-            .attr("d", myline(mydataset));
-
-        // Add the X-Axis
-        mysvg.append("g")
-            .attr("class", "x axis")
-            .attr("transform", "translate(0," + height + ")")
-            .call(xAxis);
-
-        // Add the Y-Axis
-        mysvg.append("g")
-            .attr("class", "y axis")
-            .call(yAxis);
-        }
-
-        generateVis();  // Then call other functions that
-        hideLoadingMsg();  // depend on data being present
-
+        generateVis();  // Then call other functions that depend on the data being present
+        hideLoadingMsg();  // Then call other functions that depend on the data being present
+      }
     });
 
     // Make the visualization
     function generateVis() {
       console.log("Loading the data visualization");
+
+      // Using the SVG line method, we pass in sets of x and y to draw the line
+      var my_data_line = d3.svg.line()
+        .x(function (d) {
+          return x_range(d.date);  // Return value for each x (after scaling)
+        })
+        .y(function (d) {
+          return y_range(d.calls);  // Return value for each y (after scaling)
+        });
+
+      // Add the line path
+      mysvg.append("path")  // We draw using the SVG path
+          .attr("class", "line")  // Style the line - see CSS for this class
+          .attr("d", my_data_line(mydataset));  // Here's where we actually draw the line
+
+      // Add the X-Axis
+      mysvg.append("g")
+          .attr("class", "axis")  // Style the x-axis - see CSS for this class
+          .attr("transform", "translate(0," + height + ")")  // Make X Axis appear on the bottom instead of top
+          .call(x_axis);
+
+      // Add X-Axis Text Label
+      mysvg.append("text")
+          .attr("x", width/2)  // Want this in the middle
+          .attr("y", height + margin.bottom)  // Give it a small buffer to fit label
+          .style("text-anchor", "middle")
+          .text("Date");
+
+      // Add the Y-Axis
+      mysvg.append("g")
+          .attr("class", "axis")  // Style the y axis - see CSS for this class
+          .call(y_axis);
+
+      // Add Y-Axis Text Label
+      mysvg.append("text")
+          .attr("transform", "rotate(-90)")  // Rotate text to its side (also rotates our reference point)
+          .attr("y", 0 - margin.left)  // Previously 0,0 as x,y on top left; Now 0,0 as y,x on bottom left
+          .attr("x", 0 - (height/2))
+          .attr("dy", "1em")  // Shift the text to the right (dy is a relative adjustment and 1em is one unit of the text point size)
+          .style("text-anchor", "middle")  // Put text in center
+          .text("Calls Answered");
+
+      // Add Title
+      mysvg.append("text")
+          .attr("x", (width / 2))
+          .attr("y", 0 - (margin.top / 2))
+          .attr("text-anchor", "middle")
+          .style("font-size", "16px")
+          .style("text-decoration", "underline")
+          .text("Lifeline Calls Answered by Year");
     }
 
-
+    // If there is a Loading Message, hides it
     function hideLoadingMsg() {
       console.log("Hiding the loading message");
     }
-
-
 
     </script>
   </body>
