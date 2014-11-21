@@ -14,17 +14,30 @@
         font: 12 Arial;
       }
 
+      /* CSS for the specific line drawn */
       path {
         stroke: blue;
-        stroke-width: 3;
+        stroke-width: 1;
         fill: none;
       }
 
+      /* CSS for the X and Y Axis */
       .axis path, .axis line {
         fill: none;
         stroke: grey;
         stroke-width: 1;
         shape-rendering: crispEdges;
+      }
+
+      /* CSS for the tick grid lines */
+      .grid .tick {
+        stroke: lightgrey;
+        stroke-opacity: 0.7;
+        shape-rendering: crispEdges;
+      }
+
+      .grid path {
+        stroke-width: 0;
       }
 
     </style>
@@ -97,6 +110,8 @@
 
       // Using the SVG line method, we pass in sets of x and y to draw the line
       var my_data_line = d3.svg.line()
+        //.interpolate("basis")  // Smooths out graph to make it look nice
+        .interpolate("basis")  // Smooths out graph to make it look nice
         .x(function (d) {
           return x_range(d.date);  // Return value for each x (after scaling)
         })
@@ -109,11 +124,20 @@
           .attr("class", "line")  // Style the line - see CSS for this class
           .attr("d", my_data_line(mydataset));  // Here's where we actually draw the line
 
-      // Add the X-Axis
+      // Add a plain X-Axis
       mysvg.append("g")
           .attr("class", "axis")  // Style the x-axis - see CSS for this class
           .attr("transform", "translate(0," + height + ")")  // Make X Axis appear on the bottom instead of top
           .call(x_axis);
+
+      // Add an optional X-Axis' Grid
+      mysvg.append("g")
+          .attr("class", "grid")
+          .attr("transform", "translate(0," + height + ")")
+          .call(make_x_axis_grid()
+                .tickSize(-height, 0, 0)
+                .tickFormat("")
+                )
 
       // Add X-Axis Text Label
       mysvg.append("text")
@@ -122,10 +146,18 @@
           .style("text-anchor", "middle")
           .text("Date");
 
-      // Add the Y-Axis
+      // Add a plain Y-Axis
       mysvg.append("g")
           .attr("class", "axis")  // Style the y axis - see CSS for this class
           .call(y_axis);
+
+      // Add an optional Y-Axis' Grid
+      mysvg.append("g")
+          .attr("class", "grid")
+          .call(make_y_axis_grid()
+                .tickSize(-width, 0, 0)
+                .tickFormat("")
+                )
 
       // Add Y-Axis Text Label
       mysvg.append("text")
@@ -144,6 +176,22 @@
           .style("font-size", "16px")
           .style("text-decoration", "underline")
           .text("Lifeline Calls Answered by Year");
+    }
+
+    // Make a light X-Axis Grid
+    function make_x_axis_grid() {
+      return d3.svg.axis()
+          .scale(x_range)
+          .orient("bottom")
+          .ticks(5)
+    }
+
+    // Make a light Y-Axis Grid
+    function make_y_axis_grid() {
+      return d3.svg.axis()
+          .scale(y_range)
+          .orient("left")
+          .ticks(5)
     }
 
     // If there is a Loading Message, hides it
