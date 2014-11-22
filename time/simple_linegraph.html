@@ -29,7 +29,7 @@
         shape-rendering: crispEdges;
       }
 
-      /* CSS for the tick grid lines */
+      /* CSS for the X and Y Axis tick grid lines */
       .grid .tick {
         stroke: lightgrey;
         stroke-opacity: 0.7;
@@ -39,6 +39,7 @@
       .grid path {
         stroke-width: 0;
       }
+      /* End CSS for the X and Y Axis tick grid lines */
 
     </style>
   </head>
@@ -122,6 +123,7 @@
       // Add the line path
       mysvg.append("path")  // We draw using the SVG path
           .attr("class", "line")  // Style the line - see CSS for this class
+          //.style("stroke-dasharray", ("3, 3"))  // Make line path a dashed line
           .attr("d", my_data_line(mydataset));  // Here's where we actually draw the line
 
       // Add a plain X-Axis
@@ -197,6 +199,37 @@
     // If there is a Loading Message, hides it
     function hideLoadingMsg() {
       console.log("Hiding the loading message");
+    }
+
+    // Create Event Handlers for mouse
+    function handleMouseOver(d, i) {  // Add interactivity
+        // Use D3 to select element, change color and size
+        d3.select(this).attr({
+          //fill: "orange",
+          //r: radius * 2
+          //stroke: "red"
+        });
+
+        // Specify where to put label of text
+        svg.append("text").attr({
+           id: "t" + d.x + "-" + d.y + "-" + i,  // Create an id for text so we can select it later for removing on mouseout
+            x: function() { return xScale(d.x) - 30; },
+            y: function() { return yScale(d.y) - 15; }
+        })
+        .text(function() {
+          return [d.x, d.y];  // Value of the text
+        });
+    }
+
+    function handleMouseOut(d, i) {
+        // Use D3 to select element, change color back to normal
+        d3.select(this).attr({
+          fill: "black",
+          //r: radius
+        });
+
+        // Select text by id and then remove
+        d3.select("#t" + d.x + "-" + d.y + "-" + i).remove();  // Remove text location
     }
 
     </script>
