@@ -41,6 +41,12 @@
       }
       /* End CSS for the X and Y Axis tick grid lines */
 
+      /* Fill graph area with color */
+      .area {
+        fill: lightsteelBlue;
+        stroke-width: 0;
+      }
+
     </style>
   </head>
 
@@ -71,6 +77,16 @@
     // Define the axes (notice it takes into account the ranges defined earlier)
     var x_axis = d3.svg.axis().scale(x_range).orient("bottom").ticks(5);
     var y_axis = d3.svg.axis().scale(y_range).orient("left").ticks(10);
+
+    // Define the Area Fill Under Line Path
+    var area = d3.svg.area()
+        .x(function (d) {
+          return x_range(d.date)
+        })
+        .y0(height)
+        .y1(function (d) {
+          return y_range(d.calls);
+        });
 
     // Load the data
     d3.csv("calls.csv", function(error, data) {
@@ -109,10 +125,15 @@
     function generateVis() {
       console.log("Loading the data visualization");
 
+      // Add the Area Fill under Plot Line
+      mysvg.append("path")
+          .datum(mydataset)
+          .attr("class", "area")
+          .attr("d", area);
+
       // Using the SVG line method, we pass in sets of x and y to draw the line
       var my_data_line = d3.svg.line()
         //.interpolate("basis")  // Smooths out graph to make it look nice
-        .interpolate("basis")  // Smooths out graph to make it look nice
         .x(function (d) {
           return x_range(d.date);  // Return value for each x (after scaling)
         })
@@ -178,6 +199,7 @@
           .style("font-size", "16px")
           .style("text-decoration", "underline")
           .text("Lifeline Calls Answered by Year");
+
     }
 
     // Make a light X-Axis Grid
@@ -199,37 +221,6 @@
     // If there is a Loading Message, hides it
     function hideLoadingMsg() {
       console.log("Hiding the loading message");
-    }
-
-    // Create Event Handlers for mouse
-    function handleMouseOver(d, i) {  // Add interactivity
-        // Use D3 to select element, change color and size
-        d3.select(this).attr({
-          //fill: "orange",
-          //r: radius * 2
-          //stroke: "red"
-        });
-
-        // Specify where to put label of text
-        svg.append("text").attr({
-           id: "t" + d.x + "-" + d.y + "-" + i,  // Create an id for text so we can select it later for removing on mouseout
-            x: function() { return xScale(d.x) - 30; },
-            y: function() { return yScale(d.y) - 15; }
-        })
-        .text(function() {
-          return [d.x, d.y];  // Value of the text
-        });
-    }
-
-    function handleMouseOut(d, i) {
-        // Use D3 to select element, change color back to normal
-        d3.select(this).attr({
-          fill: "black",
-          //r: radius
-        });
-
-        // Select text by id and then remove
-        d3.select("#t" + d.x + "-" + d.y + "-" + i).remove();  // Remove text location
     }
 
     </script>
