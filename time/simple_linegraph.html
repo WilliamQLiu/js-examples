@@ -101,7 +101,7 @@
 
         // Ensures that dates and numbers are pulled out of file correctly
         data.forEach(function (d) {  // Goes through each array/row
-          d.date = parseDate(d.date);  // calls our function parseDate to return a string
+          d.date = parseDate(d.date);  // calls our function parseDate to return a date from string
           d.calls = +d.calls;
         });
 

@@ -28,138 +28,171 @@
   <body>
     <!-- Begin Javascript -->
     <script type="text/javascript">
-      var svg = d3.select("body").append("svg")
-          .attr({
-            width: window.innerWidth,
-            height: window.innerHeight
-          });
 
-      // Parses a date string (e.g. in format 2009) into an actual datetime
-      var parse = d3.time.format("%Y").parse;
-      var radius = 4;
+    // Setup dimensions of canvas (margins ensure we have room for things like axis and labels)
+    var margin = { top: 50, right: 30, bottom: 50, left: 50},
+        width = 600 - margin.left - margin.right,
+        height = 400 - margin.top - margin.bottom;
 
-      d3.csv("calls.csv", function(d) { d.year = parse(d.year); return d; }, function (dataset) {
-          //console.log(data);  // See that data is loading in console
+    // Adds the svg canvas that D3 will draw on
+    var mysvg = d3.select("body")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")  // Use g as a grouping element
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");  // Transformed by moving (translating) to the point margin.left, margin.top (top left);
 
-          // Our X Scale
-          var yearScale = d3.time.scale()  // Instead of a normal number, this takes a JS date
-              .domain(d3.extent(dataset, function (d) { return d.year; }))  // extent is combo of min and max
-              .range([50, window.innerWidth - 50]);
+    var mydataset;  // Global variable to hold data once it's loaded
 
-          // Our Y Scale
-          var callScale = d3.scale.linear()
-              .domain([0, d3.max(dataset, function (d) { return d.calls; })])
-              .range([50, window.innerHeight - 50]);
+    // Parses a date string (e.g. in format 2009) into an actual datetime
+    var parseDate = d3.time.format("%Y").parse;
+    var radius = 4;
 
-          // Create a line on the top of the graph
-          svg.append("line")
-              .attr({
-                x1: 50,
-                y1: 50,
-                x2: window.innerWidth - 50,
-                y2: 50,
-                fill: "none",
-                stroke: "#474747"
-              });
+    // Set the ranges (i.e. make sure that our data values fit into the screen)
+    var x_range = d3.time.scale().range([0, width]);
+    var y_range = d3.scale.linear().range([height, 0]);
 
-          // Creates a line that connects the dots between the points (using shape generators)
-          var myline = d3.svg.line()
-              .x(function (d) { return yearScale(d.year); })
-              .y(function (d) { return window.innerHeight - callScale(d.calls); });
+    // Load the data
+    d3.csv("calls.csv", function (dataset) {
+        //console.log(data);  // See that data is loading in console
 
-          svg.append("path")
-              .data([dataset])  // Uses the same data that our circles took, but want it all in one array to treat as a single piece of data
-              .attr({
-                d: myline,  // myline generates a string that matches the path's parameter
-                fill: "none",
-                stroke: "#78B446",
-                "stroke-width": 4
-              });
+        // Ensures that dates and numbers are pulled out of file correctly (e.g. from string to date)
+        dataset.forEach(function (d){
+          d.year = parseDate(d.year);  // Calls our function parseDate to return a date from string
+        });
 
-          // Creates an area fill for the line path (using shape generators)
-          var myarea = d3.svg.area()
-              .x(function (d) { return yearScale(d.year); })
-              .y0(window.innerHeight - 50)
-              .y1(function (d) { return window.innerHeight - callScale(d.calls); });
+        // Our X Scale (DateTime)
+        x_range.domain(d3.extent(dataset, function (d) {
+          return d.year;
+        }));
 
-          svg.append("path")
-              .data([dataset])
-              .attr({
-                d: myarea,
-                fill: "#C3E4A8",
-                stroke: "none"
-              });
+        // Our Y Scale (Numeric Value)
+        y_range.domain([0, d3.max(dataset, function (d) {
+          return d.calls;
+        })]);
 
-          // Set our X Axis and makes the ticks go really high up
-          var yearAxis = d3.svg.axis().scale(yearScale)
-              .tickSize( 100 - window.innerHeight)  // Reverses direction that ticks are in
-              .orient("bottom");
-
-          svg.append("g")
-              .attr({
-                "class": "axis",
-                "transform": "translate(" + [0, window.innerHeight - 50] + ")"
-              }).call(yearAxis);
-
-          // Set our Y Axis
-          var callAxis = d3.svg.axis().scale(callScale)
-              .tickSize(window.innerWidth - 50 - 50)  // Reverses direction that ticks are in
-              .orient("left");
-
-          svg.append("g")
-              .attr({
-                "class": "axis",
-                "transform": "translate(" + [window.innerWidth - 50] + ")"
-              }).call(callAxis);
-
-
-          // Create our circles to represent the dataset
-          svg.selectAll("circle")
-              .data(dataset)  // Uses the same data that our circles took, but want it all in one array to treat as a single piece of data
-              .enter()
-              .append("circle")
-              .attr({
-                  cx: function (d) { return yearScale(d.year); },
-                  cy: function (d) { return window.innerHeight - callScale(d.calls); },
-                  r: 4,
-                  fill: "#fff",
-                  stroke: "#78B446",
-                  "stroke-width": 4 // Need quotes because it has a hyphen
-              })
-              .on("mouseover", handleMouseOver);
-              //.on("mouseout", handleMouseOut);
-
-      // Create Event Handlers for mouse
-      function handleMouseOver(d, i) {  // Add interactivity
-          // Use D3 to select element, change color and size
-          d3.select(this).attr({
-            fill: "orange",
-            r: radius * 2
-          });
-
-          // Specify where to put label of text
-          svg.append("text").attr({
-             id: "t" + d.year + "-" + d.calls + "-" + i,  // Create an id for text so we can select it later for removing on mouseout
-              x: function() { return yearScale(d.years); },
-              y: function() { return callScale(d.calls); }
-          })
-          .text(function() {
-            return [d.years, d.calls];  // Value of the text
-          });
-      }
-
-      function handleMouseOut(d, i) {
-          // Use D3 to select element, change color back to normal
-          d3.select(this).attr({
-            fill: "black",
-            r: radius
-          });
-
-          // Select text by id and then remove
-          d3.select("#t" + d.year + "-" + d.calls + "-" + i).remove();  // Remove text location
-      }
-
+        mydataset = dataset;  // Load data to global variable
+        generateVis();
       });
+
+
+    function generateVis(){
+
+      //console.log(mydataset);  // Spot check that data loaded
+      /*
+      // Create a line on the top of the graph
+      mysvg.append("line")
+          .attr({
+            x1: margin.left,
+            y1: margin.top,
+            x2: width,
+            y2: margin.top,
+            fill: "none",
+            stroke: "#474747"
+          });*/
+
+      // Creates a line that connects the dots between the points (using shape generators)
+      var myline = d3.svg.line()
+          .x(function (d) { return x_range(d.year); })
+          .y(function (d) { return y_range(d.calls); });
+
+      // Actually draws the line
+      mysvg.append("path")
+          .data([mydataset])  // Uses the same data that our circles took, but want it all in one array to treat as a single piece of data
+          .attr({
+            d: myline,  // myline generates a string that matches the path's parameter
+            fill: "none",
+            stroke: "#78B446",
+            "stroke-width": 4
+          });
+
+      // Creates an area fill for the line path (using shape generators)
+      var myarea = d3.svg.area()
+          .x(function (d) { return x_range(d.year); })
+          .y0(height)
+          .y1(function (d) { return y_range(d.calls); });
+
+      // Actually draws the area
+      mysvg.append("path")
+          .data([mydataset])
+          .attr({
+            d: myarea,
+            fill: "#C3E4A8",
+            stroke: "none"
+          });
+
+      // Set our X Axis
+      var x_axis = d3.svg.axis()
+          .scale(x_range)
+          .tickSize(5)
+          .orient("bottom");
+
+      // Draw our X Axis
+      mysvg.append("g")
+          .attr({
+            "class": "axis",
+            "transform": "translate(" + [0, height] + ")" // Make X Axis appear on bottom instead of top
+          }).call(x_axis);
+
+      // Set our Y Axis
+      var y_axis = d3.svg.axis()
+          .scale(y_range)
+          .tickSize(5)
+          .orient("left");
+
+      // Draw our Y Axis
+      mysvg.append("g")
+          .attr({
+            "class": "axis"
+          }).call(y_axis)
+
+        // Create our circles to represent the dataset
+        mysvg.selectAll("circle")
+            .data(mydataset)  // Uses the same data that our circles took, but want it all in one array to treat as a single piece of data
+            .enter()
+            .append("circle")
+            .attr({
+                cx: function (d) { return x_range(d.year); },
+                cy: function (d) { return y_range(d.calls); },
+                r: 4,
+                fill: "#fff",
+                stroke: "#78B446",
+                "stroke-width": 4 // Need quotes because it has a hyphen
+            })
+            .on("mouseover", handleMouseOver)
+            .on("mouseout", handleMouseOut);
+        }
+
+        // Create Event Handlers for mouse
+        function handleMouseOver(d, i) {  // Add interactivity
+            // Use D3 to select element, change color and size
+            d3.select(this).attr({
+              fill: "orange",
+              r: radius * 2
+            });
+
+            // Specify text and where to put label of text
+            mysvg.append("text").attr({
+               id: "t" + Date.parse(d.year) + "-" + d.calls + "-" + i,  // Create an id for text so we can select it later for removing on mouseout
+                x: function() { return x_range(d.year) -30; },
+                y: function() { return y_range(d.calls) - 15; }
+            })
+            .text(function() {
+              return [d.year, d.calls];  // Value of the text
+            });
+        }
+
+        function handleMouseOut(d, i) {
+            // Use D3 to select element, change color back to normal
+            d3.select(this).attr({
+              fill: "black",
+              r: radius
+            });
+            // Select text by id and then remove
+            d3.select("#t" + Date.parse(d.year) + "-" + d.calls + "-" + i).remove();  // Remove text location
+        }
+
+
 
     </script>
   </body>
