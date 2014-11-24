@@ -16,10 +16,23 @@
         font-family: sans-serif;
         font-size: 11px;
       }
+
+      /* Styling for specific line drawn */
       .axis path, .axis line {
         fill: none;
         stroke: #474747;
         shape-rendering: crispEdges;
+      }
+
+      /* Styling for the X and Y Axis tick grid lines */
+      .grid .tick {
+        stroke: lightgrey;
+        stroke-opacity: 0.7;
+        shape-rendering: crispEdges;
+      }
+
+      .grid path {
+        stroke-width: 0;
       }
 
     </style>
@@ -30,7 +43,7 @@
     <script type="text/javascript">
 
     // Setup dimensions of canvas (margins ensure we have room for things like axis and labels)
-    var margin = { top: 50, right: 30, bottom: 50, left: 50},
+    var margin = { top: 50, right: 70, bottom: 40, left: 50},
         width = 600 - margin.left - margin.right,
         height = 400 - margin.top - margin.bottom;
 
@@ -79,22 +92,90 @@
     function generateVis(){
 
       //console.log(mydataset);  // Spot check that data loaded
-      /*
+
       // Create a line on the top of the graph
-      mysvg.append("line")
+      /*mysvg.append("line")
           .attr({
-            x1: margin.left,
-            y1: margin.top,
+            x1: 0,
+            y1: 0,
             x2: width,
-            y2: margin.top,
+            y2: 0,
             fill: "none",
             stroke: "#474747"
-          });*/
+          });
+      */
 
       // Creates a line that connects the dots between the points (using shape generators)
       var myline = d3.svg.line()
           .x(function (d) { return x_range(d.year); })
           .y(function (d) { return y_range(d.calls); });
+
+      // Set our X Axis
+      var x_axis = d3.svg.axis()
+          .scale(x_range)
+          .tickSize(5)
+          .orient("bottom");
+
+      // Draw our X Axis
+      mysvg.append("g")
+          .attr({
+            "class": "axis",
+            "transform": "translate(" + [0, height] + ")" // Make X Axis appear on bottom instead of top
+          }).call(x_axis);
+
+      // Add an optional X-Axis' Grid
+      mysvg.append("g")
+          .attr("class", "grid")
+          .attr("transform", "translate(0," + height + ")")
+          .call(make_x_axis_grid()
+                .tickSize(-height, 0, 0)
+                .tickFormat("")
+                )
+
+      // Add X Axis Text Label
+      mysvg.append("text")
+          .attr("x", width/2)
+          .attr("y", height + margin.bottom)
+          .style("text-anchor", "middle")
+          .text("Year");
+
+      // Set our Y Axis
+      var y_axis = d3.svg.axis()
+          .scale(y_range)
+          .tickSize(5)
+          .orient("left");
+
+      // Draw our Y Axis
+      mysvg.append("g")
+          .attr({
+            "class": "axis"
+          }).call(y_axis)
+
+      // Add an optional Y-Axis' Grid
+      mysvg.append("g")
+          .attr("class", "grid")
+          .call(make_y_axis_grid()
+                .tickSize(-width, 0, 0)
+                .tickFormat("")
+                )
+
+      // Add Y Axis Text Label
+      mysvg.append("text")
+          .attr("transform", "rotate(-90)")  // Rotate text to its side
+          .attr("y", 0 -margin.left)  // Previously 0,0 as x,y on top left; Now 0,0 as y,x on bottom left
+          .attr("x", 0 - (height/2))
+          .attr("dy", "1.5em")  // Shift the text to the right (dy is a relative adjustment and 1em is one unit of the text point size)
+          .style("text-anchor", "middle")
+          .text("Calls-Answered");
+
+      // Add Title
+      mysvg.append("text")
+          .attr("x", (width / 2))
+          .attr("y", 0 - (margin.top / 2))
+          .attr("text-anchor", "middle")
+          .style("font-size", "16px")
+          //.style("text-decoration", "underline")
+          .text("Lifeline Calls Answered by Year");
 
       // Actually draws the line
       mysvg.append("path")
@@ -118,81 +199,80 @@
           .attr({
             d: myarea,
             fill: "#C3E4A8",
-            stroke: "none"
+            stroke: "none",
+            opacity: 0.5
           });
 
-      // Set our X Axis
-      var x_axis = d3.svg.axis()
-          .scale(x_range)
-          .tickSize(5)
-          .orient("bottom");
-
-      // Draw our X Axis
-      mysvg.append("g")
+      // Create our circles to represent the dataset
+      mysvg.selectAll("circle")
+          .data(mydataset)  // Uses the same data that our circles took, but want it all in one array to treat as a single piece of data
+          .enter()
+          .append("circle")
           .attr({
-            "class": "axis",
-            "transform": "translate(" + [0, height] + ")" // Make X Axis appear on bottom instead of top
-          }).call(x_axis);
+              cx: function (d) { return x_range(d.year); },
+              cy: function (d) { return y_range(d.calls); },
+              r: 4,
+              fill: "#fff",
+              stroke: "#78B446",
+              "stroke-width": 4 // Need quotes because it has a hyphen
+          })
+          .on("mouseover", handleMouseOver)
+          .on("mouseout", handleMouseOut);
+      }
 
-      // Set our Y Axis
-      var y_axis = d3.svg.axis()
-          .scale(y_range)
-          .tickSize(5)
-          .orient("left");
+      // Create Event Handlers for mouse
+      function handleMouseOver(d, i) {  // Add interactivity
+          // Use D3 to select element, transition with change color and size
+          d3.select(this)
+              .transition()
+              .duration(1000)  // How long the transition effect lasts
+              .ease("elastic")  // Type of transition
+              .attr({
+                  fill: "yellow",
+                  r: radius * 2
+              });
 
-      // Draw our Y Axis
-      mysvg.append("g")
-          .attr({
-            "class": "axis"
-          }).call(y_axis)
+          // Specify text and where to put label of text
+          mysvg.append("text").attr({
+              id: "t" + Date.parse(d.year) + "-" + d.calls + "-" + i,  // Create an id for text so we can select it later for removing on mouseout
+              x: function() { return x_range(d.year) -30; },  // Where to put X
+              y: function() { return y_range(d.calls) - 15; }  // Where to put Y
+          })
+          .text(function() {
+              //return [d.year, d.calls];  // Value of the text
+              return [d.calls + " Calls Answered"];
+          });
+      }
 
-        // Create our circles to represent the dataset
-        mysvg.selectAll("circle")
-            .data(mydataset)  // Uses the same data that our circles took, but want it all in one array to treat as a single piece of data
-            .enter()
-            .append("circle")
-            .attr({
-                cx: function (d) { return x_range(d.year); },
-                cy: function (d) { return y_range(d.calls); },
-                r: 4,
-                fill: "#fff",
-                stroke: "#78B446",
-                "stroke-width": 4 // Need quotes because it has a hyphen
-            })
-            .on("mouseover", handleMouseOver)
-            .on("mouseout", handleMouseOut);
-        }
+      function handleMouseOut(d, i) {
+          // Use D3 to select element, change color back to normal
+          d3.select(this)
+              .transition()
+              .duration(1000)  // How long the transition effect lasts
+              .ease("elastic")  // Type of transition
+              .attr({
+                  fill: "white",
+                  r: radius
+          });
+          // Select text by id and then remove
+          d3.select("#t" + Date.parse(d.year) + "-" + d.calls + "-" + i).remove();  // Remove text location
+      }
 
-        // Create Event Handlers for mouse
-        function handleMouseOver(d, i) {  // Add interactivity
-            // Use D3 to select element, change color and size
-            d3.select(this).attr({
-              fill: "orange",
-              r: radius * 2
-            });
+      // Make a light X-Axis Grid
+      function make_x_axis_grid() {
+        return d3.svg.axis()
+            .scale(x_range)
+            .orient("bottom")
+            .ticks(5)
+      }
 
-            // Specify text and where to put label of text
-            mysvg.append("text").attr({
-               id: "t" + Date.parse(d.year) + "-" + d.calls + "-" + i,  // Create an id for text so we can select it later for removing on mouseout
-                x: function() { return x_range(d.year) -30; },
-                y: function() { return y_range(d.calls) - 15; }
-            })
-            .text(function() {
-              return [d.year, d.calls];  // Value of the text
-            });
-        }
-
-        function handleMouseOut(d, i) {
-            // Use D3 to select element, change color back to normal
-            d3.select(this).attr({
-              fill: "black",
-              r: radius
-            });
-            // Select text by id and then remove
-            d3.select("#t" + Date.parse(d.year) + "-" + d.calls + "-" + i).remove();  // Remove text location
-        }
-
-
+      // Make a light Y-Axis Grid
+      function make_y_axis_grid() {
+        return d3.svg.axis()
+            .scale(y_range)
+            .orient("left")
+            .ticks(5)
+      }
 
     </script>
   </body>
