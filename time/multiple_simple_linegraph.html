@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<!-- Load data from csv, parse a date, plot using shape generators
+     Generates multiple lines
+ -->
+<html>
+
+  <head>
+    <!-- Load D3 from site -->
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+    <!-- CSS (Styling) -->
+    <style type="text/css">
+      body {
+        margin: 0;
+        font-family: sans-serif;
+        font-size: 11px;
+      }
+
+      /* Styling for specific line drawn */
+      .axis path, .axis line {
+        fill: none;
+        stroke: #474747;
+        shape-rendering: crispEdges;
+      }
+
+      /* Styling for the X and Y Axis tick grid lines */
+      .grid .tick {
+        stroke: lightgrey;
+        stroke-opacity: 0.7;
+        shape-rendering: crispEdges;
+      }
+
+      .grid path {
+        stroke-width: 0;
+      }
+
+    </style>
+  </head>
+
+  <body>
+    <!-- Begin Javascript -->
+    <script type="text/javascript">
+
+    // Setup dimensions of canvas (margins ensure we have room for things like axis and labels)
+    var margin = { top: 50, right: 70, bottom: 40, left: 50},
+        width = 600 - margin.left - margin.right,
+        height = 400 - margin.top - margin.bottom;
+
+    // Adds the svg canvas that D3 will draw on
+    var mysvg = d3.select("body")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")  // Use g as a grouping element
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");  // Transformed by moving (translating) to the point margin.left, margin.top (top left);
+
+    var mydataset;  // Global variable to hold data once it's loaded
+
+    // Parses a date string (e.g. in format 2009) into an actual datetime
+    var parseDate = d3.time.format("%Y").parse;
+    var radius = 4;
+
+    // Set the ranges (i.e. make sure that our data values fit into the screen)
+    var x_range = d3.time.scale().range([0, width]);
+    var y_range = d3.scale.linear().range([height, 0]);
+
+    // Load the data
+    d3.csv("multiple_calls.csv", function (dataset) {
+        //console.log(data);  // See that data is loading in console
+
+        // Ensures that dates and numbers are pulled out of file correctly (e.g. from string to date)
+        dataset.forEach(function (d){
+          d.year = parseDate(d.year);  // Calls our function parseDate to return a date from string
+          d.answered = +d.answered;
+          d.abandoned = +d.abandoned;
+        });
+
+        // Our X Scale (DateTime)
+        x_range.domain(d3.extent(dataset, function (d) {
+          return d.year;
+        }));
+
+        // Our Y Scale (Numeric Value)
+        y_range.domain([0, d3.max(dataset, function (d) {
+          return Math.max(d.answered, d.abandoned);  // Ensure that it takes the max of both lines (not just one)
+        })]);
+
+        mydataset = dataset;  // Load data to global variable
+        generateVis();
+      });
+
+    function generateVis(){
+
+      //console.log(mydataset);  // Spot check that data loaded
+
+      // Create a line on the top of the graph
+      /*mysvg.append("line")
+          .attr({
+            x1: 0,
+            y1: 0,
+            x2: width,
+            y2: 0,
+            fill: "none",
+            stroke: "#474747"
+          });
+      */
+
+      // Creates a line that connects the dots between the points (using shape generators)
+      var myline = d3.svg.line()
+          .x(function (d) { return x_range(d.year); })
+          .y(function (d) { return y_range(d.answered); });
+
+      var myline2 = d3.svg.line()
+          .x(function (d) { return x_range(d.year); })
+          .y(function (d) { return y_range(d.abandoned); });
+
+      // Set our X Axis
+      var x_axis = d3.svg.axis()
+          .scale(x_range)
+          .tickSize(5)
+          .orient("bottom");
+
+      // Draw our X Axis
+      mysvg.append("g")
+          .attr({
+            "class": "axis",
+            "transform": "translate(" + [0, height] + ")" // Make X Axis appear on bottom instead of top
+          }).call(x_axis);
+
+      // Add an optional X-Axis' Grid
+      mysvg.append("g")
+          .attr("class", "grid")
+          .attr("transform", "translate(0," + height + ")")
+          .call(make_x_axis_grid()
+                .tickSize(-height, 0, 0)
+                .tickFormat("")
+                )
+
+      // Add X Axis Text Label
+      mysvg.append("text")
+          .attr("x", width/2)
+          .attr("y", height + margin.bottom)
+          .style("text-anchor", "middle")
+          .text("Year");
+
+      // Set our Y Axis
+      var y_axis = d3.svg.axis()
+          .scale(y_range)
+          .tickSize(5)
+          .orient("left");
+
+      // Draw our Y Axis
+      mysvg.append("g")
+          .attr({
+            "class": "axis"
+          }).call(y_axis)
+
+      // Add an optional Y-Axis' Grid
+      mysvg.append("g")
+          .attr("class", "grid")
+          .call(make_y_axis_grid()
+                .tickSize(-width, 0, 0)
+                .tickFormat("")
+                )
+
+      // Add Y Axis Text Label
+      mysvg.append("text")
+          .attr("transform", "rotate(-90)")  // Rotate text to its side
+          .attr("y", 0 -margin.left)  // Previously 0,0 as x,y on top left; Now 0,0 as y,x on bottom left
+          .attr("x", 0 - (height/2))
+          .attr("dy", "1.5em")  // Shift the text to the right (dy is a relative adjustment and 1em is one unit of the text point size)
+          .style("text-anchor", "middle")
+          .text("Calls");
+
+      // Add Title
+      mysvg.append("text")
+          .attr("x", (width / 2))
+          .attr("y", 0 - (margin.top / 2))
+          .attr("text-anchor", "middle")
+          .style("font-size", "16px")
+          //.style("text-decoration", "underline")
+          .text("Lifeline Calls by Year");
+
+      // Actually draws the first line
+      mysvg.append("path")
+          .data([mydataset])  // Uses the same data that our circles took, but want it all in one array to treat as a single piece of data
+          .attr({
+            d: myline,  // myline generates a string that matches the path's parameter
+            fill: "none",
+            stroke: "#78B446",
+            "stroke-width": 4
+          });
+
+      // Actually draws the second line
+      mysvg.append("path")
+          .data([mydataset])  // Uses the same data that our circles took, but want it all in one array to treat as a single piece of data
+          .attr({
+            d: myline2,  // myline generates a string that matches the path's parameter
+            fill: "none",
+            stroke: "#444444",
+            "stroke-width": 4
+          });
+
+      }
+
+      // Make a light X-Axis Grid
+      function make_x_axis_grid() {
+        return d3.svg.axis()
+            .scale(x_range)
+            .orient("bottom")
+            .ticks(5)
+      }
+
+      // Make a light Y-Axis Grid
+      function make_y_axis_grid() {
+        return d3.svg.axis()
+            .scale(y_range)
+            .orient("left")
+            .ticks(5)
+      }
+
+    </script>
+  </body>
+
+</html>
