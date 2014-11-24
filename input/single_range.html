@@ -1,0 +1,74 @@
+<!-- Demonstrating a simple range input to change size of circle -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <!-- Load D3 from site -->
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+    <!-- CSS (Styling) -->
+    <style type="text/css">
+      p {
+          display: inline-block;
+          width: 400px;
+          text-align: right;
+      }
+      label[for="nRadius"] {
+          font-weight: bold;
+      }
+    </style>
+  </head>
+
+  <body>
+    <p>
+      <label for="nRadius">  <!-- for -->
+        radius = <span id="nRadius-value">...</span>  <!-- span provides a way to add a hook to part of text or doc -->
+      </label>
+
+      <!-- input tag can have four attributes: max, min, step, value (default) -->
+      <input type="range" min="1" max="150" value="120" id="nRadius">
+    </p>
+
+    <!-- Begin Javascript -->
+    <script type="text/javascript">
+
+      // Setup size
+      var width = 600;
+      var height = 400;
+      var mysvg = d3.select("body")
+          .append("svg")
+          .attr("width", width)
+          .attr("height", height);
+
+      // Draw the Circle
+      mysvg.append("circle")
+          .attr("cx", 300)
+          .attr("cy", 150)
+          .style("fill", "none")
+          .style("stroke", "blue")
+          .attr("r", 120);
+
+      // When the input range changes on mouse input, update the circle
+      d3.select("#nRadius").on("input", function() {
+          update(+this.value);  // Make sure we read this as a number
+      });
+
+      // Initial Starting Radius of the circle
+      update(120);
+
+      // Update the elements
+      function update(nRadius) {
+        // Adjust the text on the range slider
+        d3.select("#nRadius-value").text(nRadius);
+
+        d3.select("#nRadius").property("value", nRadius);
+
+          // Update the circle radius
+          mysvg.selectAll("circle")
+              .attr("r", nRadius);
+      }
+
+    </script>
+  </body>
+
+</html>
