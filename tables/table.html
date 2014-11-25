@@ -1,0 +1,300 @@
+<!-- How to create a table with D3
+
+  Normal Table looks like this; we're recreating with D3
+  <table>
+    <tr>
+      <th>Month</th>
+      <th>Savings</th>
+    </tr>
+    <tr>
+      <td>January</td>
+      <td>$100</td>
+    </tr>
+  </table>
+
+ -->
+
+<!DOCTYPE html>
+<meta charset= "utf-8" >
+<html>
+
+  <head>
+    <!-- Load D3 from site -->
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+    <!-- CSS (Styling) -->
+    <style type="text/css">
+
+      /* CSS is made up of 'selectors' and 'declarations' (e.g. select body, make font Arial) */
+      body {
+        font: 12 Arial;
+      }
+
+      /* CSS for the specific line drawn */
+      path {
+        stroke: blue;
+        stroke-width: 1;
+        fill: none;
+      }
+
+      /* CSS for the X and Y Axis */
+      .axis path, .axis line {
+        fill: none;
+        stroke: grey;
+        stroke-width: 1;
+        shape-rendering: crispEdges;
+      }
+
+      /* CSS for the X and Y Axis tick grid lines */
+      .grid .tick {
+        stroke: lightgrey;
+        stroke-opacity: 0.7;
+        shape-rendering: crispEdges;
+      }
+
+      .grid path {
+        stroke-width: 0;
+      }
+      /* End CSS for the X and Y Axis tick grid lines */
+
+      /* Fill graph area with color */
+      .area {
+        fill: lightsteelBlue;
+        stroke-width: 0;
+      }
+
+      /* Styling for inside table */
+      td, th {
+        padding: 1px 4px;
+        border: 1px black solid;
+      }
+
+    </style>
+  </head>
+
+  <body>
+    <!-- Begin Javascript -->
+    <script type="text/javascript">
+
+    // Setup dimensions of canvas (margins ensure we have room for things like axis and labels)
+    var margin = { top: 50, right: 30, bottom: 50, left: 50},
+        width = 600 - margin.left - margin.right,
+        height = 400 - margin.top - margin.bottom;
+
+    // Adds the svg canvas that D3 will draw on - we call it here so it can 'save' the spot while data is loading
+    var mysvg = d3.select("body")  // The select means where we'll place this (e.g. body element)
+        .append("svg")  // We're going to add a new svg element to the DOM
+        .attr("width", width + margin.left + margin.right)  // With this attr
+        .attr("height", height + margin.top + margin.bottom)  // And with this attr
+        .append("g")  // Use 'g' as a grouping element to group together several related elements (top left hand corner); this way when we draw on canvas, can reference point 'g'
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");  // Transformed by moving (translating) to the point margin.left, margin.top (top left)
+
+    var mydataset;  // Global variable to hold data once it's loaded, allows all functions to access data
+
+    // Set the ranges (i.e. make sure that our data values fit into the screen)
+    // range() generates an array containing a sequence of numeric or integer values
+    var x_range = d3.time.scale().range([0, width]);  // Datetime value, need to scale to our
+    var y_range = d3.scale.linear().range([height, 0]);  // Scaling a numeric value, note: y needs to be reverse since 0,0 is top left
+
+    // Define the axes (notice it takes into account the ranges defined earlier)
+    var x_axis = d3.svg.axis().scale(x_range).orient("bottom").ticks(5);
+    var y_axis = d3.svg.axis().scale(y_range).orient("left").ticks(10);
+
+    // Function to parse the string to a javascript datetime
+    var parseDate = d3.time.format("%b %Y").parse;  // "Jan 2011" to "Sat Jan 01 2011 00:00:00 GMT-0500 (EST)"
+
+    // Define the Area Fill Under Line Path
+    var area = d3.svg.area()
+        .x(function (d) {
+          return x_range(d.date_short)
+        })
+        .y0(height)
+        .y1(function (d) {
+          return y_range(d.calls);
+        });
+
+    // Load the data
+    d3.csv("calls.csv", function(error, data) {
+
+      if (error) {  // If error is not null, something went wrong
+        console.log("Something went wrong! " + error);
+      }
+      else {  // If no error, the file loaded correctly
+
+        // Ensures that dates and numbers are pulled out of file correctly
+        data.forEach(function (d) {  // Goes through each array/row
+          d.date_short = parseDate(d.date);  // calls our function parseDate to return a date from string
+          d.calls = +d.calls;  // Make sure we read this as a number
+        });
+
+        // Scale the range of the data
+        // The extent() gets the min and max values in the dataset
+        // The domain() returns the max and min values to D3 as the range for
+        x_range.domain(d3.extent(data, function (d) {
+          return d.date_short;
+        }));
+        y_range.domain([0, d3.max(data, function (d){
+          return d.calls;
+        })]);
+
+        mydataset = data;  // Once loaded, copy to global variable so accessible outside this function
+        generateVis();  // Then call other functions that depend on the data being present
+        hideLoadingMsg();  // Then call other functions that depend on the data being present
+      }
+    });
+
+    // Make the visualization
+    function generateVis() {
+      console.log("Loading the data visualization");
+
+      // Add the Area Fill under Plot Line
+      mysvg.append("path")
+          .datum(mydataset)  // like .data, but only get or set data for individual elements (without computing a join)
+          .attr("class", "area")
+          .attr("d", area);
+
+      // Using the SVG line method, we pass in sets of x and y to draw the line
+      var my_data_line = d3.svg.line()
+        //.interpolate("basis")  // Smooths out graph to make it look nice
+        .x(function (d) {
+          //return x_range(d.date);  // Return value for each x (after scaling)
+          return x_range(d.date_short);  // Return value for each x (after scaling) and make easy to read
+        })
+        .y(function (d) {
+          return y_range(d.calls);  // Return value for each y (after scaling)
+        });
+
+      // Add the line path
+      mysvg.append("path")  // We draw using the SVG path
+          .attr("class", "line")  // Style the line - see CSS for this class
+          //.style("stroke-dasharray", ("3, 3"))  // Make line path a dashed line
+          .attr("d", my_data_line(mydataset));  // Here's where we actually draw the line
+
+      // Add a plain X-Axis
+      mysvg.append("g")
+          .attr("class", "axis")  // Style the x-axis - see CSS for this class
+          .attr("transform", "translate(0," + height + ")")  // Make X Axis appear on the bottom instead of top
+          .call(x_axis);
+
+      // Add an optional X-Axis' Grid
+      mysvg.append("g")
+          .attr("class", "grid")
+          .attr("transform", "translate(0," + height + ")")
+          .call(make_x_axis_grid()
+                .tickSize(-height, 0, 0)
+                .tickFormat("")
+                )
+
+      // Add X-Axis Text Label
+      mysvg.append("text")
+          .attr("x", width/2)  // Want this in the middle
+          .attr("y", height + margin.bottom)  // Give it a small buffer to fit label
+          .style("text-anchor", "middle")
+          .text("Date");
+
+      // Add a plain Y-Axis
+      mysvg.append("g")
+          .attr("class", "axis")  // Style the y axis - see CSS for this class
+          .call(y_axis);
+
+      // Add an optional Y-Axis' Grid
+      mysvg.append("g")
+          .attr("class", "grid")
+          .call(make_y_axis_grid()
+                .tickSize(-width, 0, 0)
+                .tickFormat("")
+                )
+
+      // Add Y-Axis Text Label
+      mysvg.append("text")
+          .attr("transform", "rotate(-90)")  // Rotate text to its side (also rotates our reference point)
+          .attr("y", 0 - margin.left)  // Previously 0,0 as x,y on top left; Now 0,0 as y,x on bottom left
+          .attr("x", 0 - (height/2))
+          .attr("dy", "1em")  // Shift the text to the right (dy is a relative adjustment and 1em is one unit of the text point size)
+          .style("text-anchor", "middle")  // Put text in center
+          .text("Calls Answered");
+
+      // Add Title
+      mysvg.append("text")
+          .attr("x", (width / 2))
+          .attr("y", 0 - (margin.top / 2))
+          .attr("text-anchor", "middle")
+          .style("font-size", "16px")
+          .style("text-decoration", "underline")
+          .text("Lifeline Calls Answered by Year");
+
+      // Render the table
+      var callTable = tabulate(mydataset, ["date", "calls"]);  // Pass in data and array of column names
+
+    }
+
+    // Make a light X-Axis Grid
+    function make_x_axis_grid() {
+      return d3.svg.axis()
+          .scale(x_range)
+          .orient("bottom")
+          .ticks(5)
+    }
+
+    // Make a light Y-Axis Grid
+    function make_y_axis_grid() {
+      return d3.svg.axis()
+          .scale(y_range)
+          .orient("left")
+          .ticks(5)
+    }
+
+    // If there is a Loading Message, hides it
+    function hideLoadingMsg() {
+      console.log("Hiding the loading message");
+    }
+
+    // Create a table, taking in data and array of column headers
+    function tabulate(mydata, mycolumns) {
+
+      // Setup table location (i.e. where our new table DOM elements will be)
+      var table = d3.select("body")
+          .append("table")  // Adds a new element with the specified name as the last child of each element of the selection
+          .style("margin-left", 0)  // Make table in center
+          .style("border-collapse", "collapse")
+          .style("border", "2px black solid")
+          thead = table.append("thead"),  // Table Head
+          tbody = table.append("tbody");  // Table Body
+
+          // Append the Header row
+          thead.append("tr")  // Create first row
+              .selectAll("th")  // Find table header
+              .data(mycolumns)  //
+              .enter()
+              .append("th")
+              .text(function (column) {
+                return column;
+              });
+
+          // Create a row for each object in the data
+          var rows = tbody.selectAll("tr")  // Returns a new empty selection (since this container was empty)
+              .data(mydata)  // Joins our data (each object creates a new table row)
+              .enter()  // Creates the DOM elements
+              .append("tr");
+
+          // Create a cell in each row for each column
+          var cells = rows.selectAll("td")  // select each row we've added
+              .data(function (row) {
+                return mycolumns.map(function (column) {
+                    return {column: column, value: row[column]};
+                });
+              })
+              .enter()
+              .append("td")
+              .html(function (d) {
+                return d.value;  // wraps up the value of the data in <td> tags
+              });
+          return table;
+    }
+
+
+
+    </script>
+  </body>
+
+</html>
