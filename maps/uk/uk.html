@@ -1,0 +1,166 @@
+<!-- How to draw a map with d3 from tutorial on: http://bost.ocks.org/mike/map/ -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <!-- Load D3 from site -->
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="http://d3js.org/topojson.v1.min.js"></script>
+
+    <!-- CSS (Styling) -->
+    <style type="text/css">
+
+      /* Each country has a three-letter class corresponding to the country code */
+      .subunit.SCT { fill: #ddc; }
+      .subunit.WLS { fill: #cdd; }
+      .subunit.NIR { fill: #cdc; }
+      .subunit.ENG { fill: #dcd; }
+      .subunit.IRL { display: none; }
+
+      /* Border style */
+      .subunit-boundary {
+        fill: none;
+        stroke: #777;
+        stroke-dasharray: 2,2;
+        stroke-linejoin: round;
+      }
+
+      /* Border style specifically for Ireland */
+      .subunit-boundary.IRL {
+        stroke: #aaa;
+      }
+
+      /* Text for each place */
+      text {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 9px;
+        pointer-events: none;
+      }
+
+      /* Text for each country */
+      .subunit-label {
+        fill: #777;
+        fill-opacity: .4;
+        font-size: 20px;
+        font-weight: 300;
+        text-anchor: middle;
+      }
+
+
+    </style>
+  </head>
+
+  <body>
+    <!-- Begin Javascript -->
+    <script type="text/javascript">
+
+    // Setup canvas
+    var width = 960;
+    var height = 1160;
+
+    var svg = d3.select("body").append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+    // Load data
+    d3.json("uk.json", function(error, uk) {
+
+      if (error) return console.error(error);
+
+      //console.log(uk);
+      // Draw projection (simple version, not scaled)
+      //svg.append("path")
+      //    .datum(topojson.feature(uk, uk.objects.subunits))
+      //    .attr("d", d3.geo.path().projection(d3.geo.mercator()));
+
+      // DRAWING MAP
+
+      // Draw projection (scaled version)
+      var subunits = topojson.feature(uk, uk.objects.subunits);  // Convert data back to GeoJSON for display
+
+      // Extract the definition of the projection to make the code clearer
+      var myprojection = d3.geo.albers()  // Type of map projection
+          .center([0, 55.4])  // Set the center to 0°W 55.4°N
+          .rotate([4.4, 0])  // Rotate longitude by +4.4°
+          .parallels([50, 60])  // set standard parallels of 50°N 60°N
+          .scale(6000)  // Sets the scale and returns the axis (default linear)
+          .translate([width/2, height/2]);  // Fit to screen
+
+      // Create the path that we'll draw
+      var mypath = d3.geo.path()
+          .projection(myprojection)
+          .pointRadius(2);  // Set how big points are
+
+      // Bind the GeoJSON data to the path, then draws a giant black colored map
+      //svg.append("path")
+      //    .datum(subunits)
+      //    .attr("d", mypath);
+
+      // Bind the GeoJSON data to the path, style each country with a different color
+      svg.selectAll(".subunit")
+          .data(topojson.feature(uk, uk.objects.subunits).features)
+          .enter()
+          .append("path")
+          .attr("class", function(d) { return "subunit " + d.id; })
+          .attr("d", mypath);
+
+      // Draw Borders of England-Scotland and England-Wales borders
+      svg.append("path")
+          .datum(topojson.mesh(uk, uk.objects.subunits, function(a, b) {
+            return a !== b && a.id !== "IRL";
+          }))
+          .attr("d", mypath)
+          .attr("class", "subunit-boundary");
+
+      // Draw Borders of Irish Coastline
+      svg.append("path")
+          .datum(topojson.mesh(uk, uk.objects.subunits, function(a,b) {
+            return a===b && a.id === "IRL";
+          }))
+          .attr("d", mypath)
+          .attr("class", "subunit-boundary IRL");
+
+      // DISPLAYING PLACES
+
+      // Draw small circle for each city
+      svg.append("path")  // Use d3.geo.path to render
+          .datum(topojson.feature(uk, uk.objects.places))  // convert from TopoJSON to GeoJSON
+          .attr("d", mypath)  // Render path
+          .attr("class", "place");
+
+      // Add text for each city
+      svg.selectAll(".place-label")
+          .data(topojson.feature(uk, uk.objects.places).features)
+          .enter()
+          .append("text")
+          .attr("class", "place-label")
+          .attr("transform", function (d) {
+            return "translate(" + myprojection(d.geometry.coordinates) + ")";
+          })
+          .attr("dy", ".35em")
+          .text(function (d) {
+            return d.properties.name;
+          });
+
+      // Move the text labels slightly (right-aligned lables on left side of the map,
+      // left-aligned labels on the right side of the map using 1°W as the threshold)
+      svg.selectAll(".place-label")
+          .attr("x", function (d) { return d.geometry.coordinates[0] > -1 ? 6 : -6; })
+          .style("text-anchor", function(d) { return d.geometry.coordinates[0] > -1 ? "start" : "end"; });
+
+      // Add country labels
+      svg.selectAll(".subunit-label")
+          .data(topojson.feature(uk, uk.objects.subunits).features)
+          .enter().append("text")
+          .attr("class", function (d) {
+            return "subunit-label " + d.id;
+          })
+          .attr("transform", function(d) { return "translate(" + mypath.centroid(d) + ")"; })
+          .attr("dy", ".35em")
+          .text(function (d) { return d.properties.name; });
+
+      });
+    </script>
+  </body>
+
+</html>
