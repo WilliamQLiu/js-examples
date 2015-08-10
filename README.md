@@ -1,23 +1,17 @@
-d3-examples
+js-examples
 ===========
 
 <h4>Summary</h4>
 
-I'm learning d3.js by breaking things up into smaller examples.  Some of these examples require running a simple server (due to loading data from a csv or json file) so I use the below command and then visit my localhost at http://127.0.0.1:8000/
+JavaScript examples using different libraries like d3.js and backbone.js.  Some of these examples require running a simple server (due to loading data from a csv or json file) so I use the below command and then visit my localhost at http://127.0.0.1:8000/
 
     python -m SimpleHTTPServer 8000
 
 A few of the interactive examples are available here: http://bl.ocks.org/WilliamQLiu
 
-<h4>Using D3's built-in color schemes</h4>
-![color-scheme](http://williamqliu.github.io/d3-examples/colors.png)
+##D3
 
-![barchart](http://williamqliu.github.io/d3-examples/barchart.png)
-
-![scatterplot](http://williamqliu.github.io/d3-examples/scatterplot.png)
-
-
-**Recommended Tutorials**
+####Recommended Tutorials for D3
 
  - Official D3js website has a list of good examples and tutorials [here][1]
  - Square has a great quick intro to D3 when they onboard [here][2]
@@ -25,7 +19,7 @@ A few of the interactive examples are available here: http://bl.ocks.org/William
  - Jerome Cukier's "Hello World" in D3, which goes into more detail of setting up your environment available [here][4]
  - Scott Murray (alignedleft) explains things very well.  He's also the author of 'Interactive Data Visualization', which I highly recommend.  Tutorial [here][5]
 
-**Reference API**
+####Reference D3 API
 
  - You're going to see a lot of different d3 functions and wonder what they do.  Use the official API [here][6].
 

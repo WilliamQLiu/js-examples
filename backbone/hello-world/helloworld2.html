@@ -1,0 +1,49 @@
+<!--
+  From Tutorial: http://arturadib.com/hello-backbonejs/
+  Binding of DOM events to View methods with `events`
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>hello-backbonejs</title>
+</head>
+<body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="http://ajax.cdnjs.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.1/backbone-min.js"></script>
+
+  <script>
+    (function($){  // creates a self-executing wrapper
+        var ListView = Backbone.View.extend({  // our main app's view
+          el: $('body'),  // attaches 'this.el' to an existing element
+
+          events: {
+              'click button#add': 'addItem'
+          },
+
+          initialize: function(){  // automatically call upon instantiation; do all bindings except for UI events (e.g. clicks)
+            _.bindAll(this, 'render', 'addItem'); // every function that uses 'this' as the current object should be here
+
+            this.counter = 0;  // total number of items added so far
+            this.render();  // not all views are self-rendering; this one is
+          },
+
+          render: function(){
+            $(this.el).append("<button id='add'>Add list item</button>");
+            $(this.el).append("<ul></ul>");
+          },
+
+          addItem: function(){
+              this.counter++;
+              $('ul', this.el).append("<li>hello world"+this.counter+"</li>");
+          }
+        });
+
+        var listView = new ListView();  // instantiate main app view
+      })(jQuery);
+  </script>
+
+</body>
+</html>

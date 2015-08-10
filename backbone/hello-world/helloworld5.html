@@ -1,0 +1,124 @@
+<!--
+  From Tutorial: http://arturadib.com/hello-backbonejs/
+  Create Model Actions
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>hello-backbonejs</title>
+</head>
+<body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="http://ajax.cdnjs.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.1/backbone-min.js"></script>
+
+  <script>
+    (function($){  // creates a self-executing wrapper
+
+      // `Backbone.sync` allows use of `Model.destroy()` without raising an error
+      Backbone.sync = function(method, model, success, error){
+        success();
+      }
+
+      var Item = Backbone.Model.extend({
+        defaults: {
+            part1: 'hello',
+            part2: 'world'
+        }
+      });
+
+      var List = Backbone.Collection.extend({
+        model: Item
+      });
+
+      var ItemView = Backbone.View.extend({
+        tagName: 'li', // name of (orphan) root tag in 'this.el'; tag to be created
+
+        // ItemView now respond to two clickable actions for each item `swap` and `delete`
+        events: {
+          'click span.swap': 'swap',
+          'click span.delete': 'remove'
+        },
+
+        initialize: function(){
+          _.bindAll(this, 'render', 'unrender', 'swap', 'remove');  // every function that uses 'this' as the current object should be here
+
+          this.model.bind('change', this.render);
+          this.model.bind('remove', this.unrender);
+        },
+
+        render: function(){
+          $(this.el).html('<span style="color:black;">'+this.model.get('part1')+' '+this.model.get('part2')+'</span> &nbsp; &nbsp; <span class="swap" style="font-family:sans-serif; color:blue; cursor:pointer;">[swap]</span> <span class="delete" style="cursor:pointer; color:red; font-family:sans-serif;">[delete]</span>');
+          return this;  // for chainable calls, like .render().el
+        },
+
+        unrender: function(){
+          $(this.el).remove();
+        },
+
+        swap: function(){
+          var swapped = {
+            part1: this.model.get('part2'),
+            part2: this.model.get('part1')
+          };
+          this.model.set(swapped);
+        },
+
+        remove: function(){
+          this.model.destroy();
+        }
+      });
+
+      var ListView = Backbone.View.extend({  // our main app's view
+        el: $('body'),  // attaches 'this.el' to an existing element
+
+        events: {
+            'click button#add': 'addItem'
+        },
+
+        initialize: function(){  // automatically call upon instantiation; do all bindings except for UI events (e.g. clicks)
+          _.bindAll(this, 'render', 'addItem', 'appendItem'); // every function that uses 'this' as the current object should be here
+
+          this.collection = new List();
+          this.collection.bind('add', this.appendItem);  // collection event binder
+
+          this.counter = 0;  // total number of items added so far
+          this.render();  // not all views are self-rendering; this one is
+        },
+
+        render: function(){
+          var self = this;  // save reference to 'this' so it can be accessed from within the scope of the callback
+          $(this.el).append("<button id='add'>Add list item</button>");
+          $(this.el).append("<ul></ul>");
+          _(this.collection.models).each(function(item){
+            // in case collection is not empty
+            self.appendItem(item);
+          }, this);
+        },
+
+        // addItem now works with just the models/collections
+        addItem: function(){
+          this.counter++;
+          var item = new Item();
+          item.set({
+            part2: item.get('part2') + this.counter  // modify item defaults
+          });
+          this.collection.add(item);  // add item to collection; view is updated via event 'add'
+        },
+
+        appendItem: function(item){
+          var itemView = new ItemView({
+            model: item
+          });
+          $('ul', this.el).append(itemView.render().el);
+        }
+      });
+
+      var listView = new ListView();  // instantiate main app view
+    })(jQuery);
+  </script>
+
+</body>
+</html>
