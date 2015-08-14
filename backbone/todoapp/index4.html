@@ -198,6 +198,9 @@
         if (params !== null){
           window.filter = params.trim() || '';
         }
+        if (params == null){
+          window.filter = params || '';
+        }
         app.todoList.trigger('reset');
       }
     });
