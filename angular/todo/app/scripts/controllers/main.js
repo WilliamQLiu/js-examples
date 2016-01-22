@@ -8,10 +8,17 @@
  * Controller of the todoApp
  */
 angular.module('todoApp')
-  .controller('MainCtrl', function ($scope) {
+  .controller('MainCtrl', function ($scope, localStorageService) {
     this.extraStuff = 'Some Extra Stuff';
 
-    $scope.todos = [];
+    var todosInStore = localStorageService.get('todos');
+
+    $scope.todos = todosInStore || [];
+
+    // setup a $watch listener to check for changes in todos
+    $scope.$watch('todos', function() {
+        localStorageService.set('todos', $scope.todos);
+    }, true);
 
     $scope.addTodo = function () {
         // Add a Todo
