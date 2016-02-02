@@ -1,0 +1,65 @@
+<!-- Run in folder with command: python -m SimpleHTTPServer 9000 -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>D3 - Data Driven Documents</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.js" charset="utf-8"></script>
+
+  <style type="text/css">
+    #chartArea {
+      width: 400px;
+      height: 300px;
+      background-color: #CCC;
+    }
+    body {
+      padding-top: 50px;
+      padding-left: 100px;
+    }
+    .bar
+    {
+      display: inline-block;
+      margin-right: 2px;
+      background-color: teal;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="chartArea"></div>  <!-- Where we add things to -->
+
+  <script type="text/javascript">
+
+    var dataset = [5, 10, 15, 20, 25];
+    var width = 400, height = 300;
+
+    var svg = d3.select('#chartArea')
+      .append('svg')
+      .attr('width', width)
+      .attr('height', height);
+
+    var yScale = d3.scale.linear()  // Can use d3's scale
+      .domain([0, 50])
+      .range([0, height]);
+
+    var multiplier = 5;
+
+    svg.selectAll('rect')
+      .data(dataset)
+      .enter()
+      .append('rect')
+      .attr('class', 'bar')
+      .attr('x', function (data, index) {
+        return index * 22;
+      })
+      .attr('y', function (data) {
+        return height -  yScale(data);
+      })
+      .attr('width', 20)
+      .attr('height', function (data) {
+        return yScale(data);
+      });
+
+  </script>
+</body>
+
+</html>
